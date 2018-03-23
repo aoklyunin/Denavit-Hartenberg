@@ -1,6 +1,8 @@
 #include <windows.h>
 #include <gl/gl.h>
 #include"ClaseOpenGL.h"
+
+
 ///Copyright (C) <2017>  <Eliseo Rivera> curso.tareas@gmail.com
 LRESULT CALLBACK WindowProc(HWND, UINT, WPARAM, LPARAM);
 void EnableOpenGL(HWND hwnd, HDC*, HGLRC*);
@@ -37,7 +39,7 @@ int WINAPI WinMain(HINSTANCE hInstance,
     wcex.lpszClassName = "GLSample";
     wcex.hIconSm = LoadIcon(NULL, IDI_APPLICATION);;
 
-Miclase = new ClaseOpenGL;  //agregar código opengl
+Miclase = new ClaseOpenGL;  //agregar cï¿½digo opengl
 
     if (!RegisterClassEx(&wcex))
         return 0;
@@ -45,7 +47,7 @@ Miclase = new ClaseOpenGL;  //agregar código opengl
     /* create main window */
     hwnd = CreateWindowEx(0,
                           "GLSample",
-                          "Robótica. Configuración  Denavit–Hartenberg ",
+                          "Robï¿½tica. Configuraciï¿½n  Denavitï¿½Hartenberg ",
                           WS_OVERLAPPEDWINDOW,
                           CW_USEDEFAULT,
                           CW_USEDEFAULT,

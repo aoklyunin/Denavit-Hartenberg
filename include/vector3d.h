@@ -1,6 +1,7 @@
 #ifndef vector3d_H
 #define vector3d_H
 #include <math.h>
+#include <iostream>
 
 class vector3d
 {
