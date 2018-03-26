@@ -86,7 +86,7 @@ SwapBuffers(hDC);
         {
             /* OpenGL animation code goes here */
 
-            Miclase->renderizar();
+
             SwapBuffers(hDC);
             Miclase->preparar(0.001);
 

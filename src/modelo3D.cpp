@@ -49,7 +49,6 @@ void modelo3D::leer(std::string nombre)
     archivo.open("../models/b1.stl", std::ios::in | std::ios::binary);
 
     if (archivo) {
-        std::cout << "yes\n" << std::endl;
         archivo.read(head, 80);
 
         int32_t size;
