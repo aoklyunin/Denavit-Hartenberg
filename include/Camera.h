@@ -6,7 +6,6 @@
 #define DENAVIT_HARTENBERG_VISUALIZATION_CAMERA_H
 
 
-#include "vector3d.h"
 #include <Eigen/Dense>
 
 using namespace Eigen;
@@ -20,6 +19,7 @@ class Camera
 public:
 
     Camera();
+    Camera(Vector3d _pos,Vector3d _dir,Vector3d _up);
     Vector3d getEye();
     Vector3d getUp();
     Vector3d getCenter();

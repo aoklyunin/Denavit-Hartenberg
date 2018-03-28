@@ -1,8 +1,13 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 #include "modelo3D.h"
-#include<vector>
+#include <vector>
 #include <cstdlib>
+#include <Eigen/Dense>
+#include "OpenGLWrapper.h"
+
+using namespace Eigen;
+
 ///Copyright (C) <2017>  <Eliseo Rivera> curso.tareas@gmail.com
 class Robot
 {
@@ -23,24 +28,23 @@ void inicializar();
 void renderizar();
 void configurarTH();
 
-void AplicarTHx(float theta, vector3d d);
-void AplicarTHy(float theta, vector3d d);
-void AplicarTHz(float theta, vector3d d);
-Matrix THx,THy,THz,TH;
+void AplicarTHx(float theta, Vector3d d);
+void AplicarTHy(float theta, Vector3d d);
+void AplicarTHz(float theta, Vector3d d);
 
-std::vector<Matrix> THList;
-std::vector<vector3d> Origenes;
+    Matrix4d THx,THy,THz,TH;
+
+std::vector<Matrix4d> THList;
+std::vector<Vector4d> Origenes;
 std::vector<modelo3D*> modelos;
 
 
 float theta1, theta2, theta3,theta4, theta5, theta6,theta7;
-vector3d d1,d2,d3,d4,d5,d6,d7;
+Vector3d d1,d2,d3,d4,d5,d6,d7;
 private :
-void DefinirTHx(float theta, vector3d d);
-void DefinirTHy(float theta, vector3d d);
-void DefinirTHz(float theta, vector3d d);
-void  Drawarrow3D( vector3d A,  vector3d B, vector3d color, double cota1,double R) ;
-
+void DefinirTHx(float theta, Vector3d d);
+void DefinirTHy(float theta, Vector3d d);
+void DefinirTHz(float theta, Vector3d d);
 
 };
 

@@ -4,14 +4,15 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../include/ClaseOpenGL.h"
+#include "../include/Robot.h"
 #include "../include/Camera.h"
 #include "../include/traces.h"
+#include "../include/OpenGLWrapper.h"
 
 
-ClaseOpenGL *Miclase = NULL;
+Camera camera;
 
-Camera camera = Camera();
+Robot SSRMS;
 
 double prevX = 10000;
 
@@ -45,15 +46,25 @@ void motionFunc(int x, int y)
 
 GLenum doubleBuffer;
 
-double positions[10][3];
-
 static void Init(void)
 {
     /* initialize random seed: */
     srand(time(NULL));
 
-    Miclase = new ClaseOpenGL;
-    Miclase->inicializar();
+    glClearColor(1, 1, 1, 1);
+    glEnable(GL_LINE_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_DEPTH_TEST);                    // hidden surface removal
+    glShadeModel(GL_SMOOTH);                    // use smooth shading
+    glEnable(GL_LIGHTING);
+
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT2);
+    glEnable(GL_COLOR_MATERIAL);
+
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -61,11 +72,13 @@ static void Init(void)
     glMatrixMode(GL_MODELVIEW);
     glDisable(GL_DITHER);
 
-    for (int i = 0; i < 10; i++) {
-        positions[i][0] = (rand() % 1000 - 500) / 20;
-        positions[i][1] = (rand() % 1000 - 500) / 20;
-        positions[i][2] = (rand() % 1000 - 500) / 20;
-    }
+    camera = Camera(Vector3d(-7.6, -51.0, 12.0),
+                    Vector3d(-0.25, -0.950767, 0).normalized(),
+                    Vector3d(0, 0, 1));
+
+    SSRMS.inicializar();///cargar modelos
+    SSRMS.configurarTH();///Posiciones de las piezas
+
 
 }
 
@@ -73,112 +86,114 @@ static void Init(void)
 static void Key(unsigned char key, int x, int y)
 {
     float dtheta(3);
-   // std::cout << (int) key << std::endl;
+    std::cout << (int) key << std::endl;
 
-    double delta = 0.1;
+    double deltaPos = 1;
 
     switch (key) {
         case 27:
 
             break;
 
-        case 97 :camera.moveLeft(delta); glutPostRedisplay();
+        case 97 :camera.moveLeft(deltaPos);
             break;
-        case 100 :camera.moveRight(delta); glutPostRedisplay();
-            break;
-
-        case 119:camera.moveForward(delta); glutPostRedisplay();
-
-            break;
-        case 115:camera.moveBack(delta); glutPostRedisplay();
+        case 100 :camera.moveRight(deltaPos);
             break;
 
-        case 'R':
+        case 119:camera.moveForward(deltaPos);
 
-            Miclase->SSRMS.theta4 = Miclase->SSRMS.theta4 + dtheta;
-            Miclase->SSRMS.AplicarTHz(Miclase->SSRMS.theta4, {0, 0, 1});   //b4
-            Miclase->SSRMS.THList[8] = Miclase->SSRMS.THz;
-
+            break;
+        case 115:camera.moveBack(deltaPos);
 
             break;
 
-        case 'Y':
+        case 49:
 
-            Miclase->SSRMS.theta4 = Miclase->SSRMS.theta4 - dtheta;
-            Miclase->SSRMS.AplicarTHz(Miclase->SSRMS.theta4, {0, 0, 1});   //b4
-            Miclase->SSRMS.THList[8] = Miclase->SSRMS.THz;
+            SSRMS.theta4 = SSRMS.theta4 + dtheta;
+            SSRMS.AplicarTHz(SSRMS.theta4, {0, 0, 1});   //b4
+            SSRMS.THList[8] = SSRMS.THz;
 
 
             break;
 
+        case 50:
 
-        case 'F':Miclase->SSRMS.theta5 = Miclase->SSRMS.theta5 + dtheta;
-            Miclase->SSRMS.AplicarTHz(Miclase->SSRMS.theta5, {0, 0, 6});    //b5
-            Miclase->SSRMS.THList[10] = Miclase->SSRMS.THz;
-            break;
-
-        case 'H':
-
-            Miclase->SSRMS.theta5 = Miclase->SSRMS.theta5 - dtheta;
-            Miclase->SSRMS.AplicarTHz(Miclase->SSRMS.theta5, {0, 0, 6});     //b5
-            Miclase->SSRMS.THList[10] = Miclase->SSRMS.THz;
-
-
-            break;
-
-        case 'V':Miclase->SSRMS.theta6 = Miclase->SSRMS.theta6 + dtheta;
-            Miclase->SSRMS.AplicarTHz(Miclase->SSRMS.theta6, {0, 0, 6});     //b6
-            Miclase->SSRMS.THList[12] = Miclase->SSRMS.THz;
-            break;
-
-        case 'N':
-
-            Miclase->SSRMS.theta6 = Miclase->SSRMS.theta6 - dtheta;
-            Miclase->SSRMS.AplicarTHz(Miclase->SSRMS.theta6, {0, 0, 6});      //b6
-            Miclase->SSRMS.THList[12] = Miclase->SSRMS.THz;
-            break;
-
-        case 'G':Miclase->SSRMS.theta7 = Miclase->SSRMS.theta7 - dtheta;
-            Miclase->SSRMS.AplicarTHz(Miclase->SSRMS.theta7, {0, 0, 0});     //b7, efector final
-            Miclase->SSRMS.THList[14] = Miclase->SSRMS.THz;
-            break;
-
-
-        case 99:
-
-            Miclase->SSRMS.theta1 = Miclase->SSRMS.theta1 - dtheta;
-            Miclase->SSRMS.AplicarTHz(Miclase->SSRMS.theta1, {0, 0, 2.5});     //b1
-            Miclase->SSRMS.THList[2] = Miclase->SSRMS.THz;
+            SSRMS.theta4 = SSRMS.theta4 - dtheta;
+            SSRMS.AplicarTHz(SSRMS.theta4, {0, 0, 1});   //b4
+            SSRMS.THList[8] = SSRMS.THz;
 
 
             break;
 
 
-        case 102:
+        case 51:SSRMS.theta5 = SSRMS.theta5 + dtheta;
+            SSRMS.AplicarTHz(SSRMS.theta5, {0, 0, 6});    //b5
+            SSRMS.THList[10] = SSRMS.THz;
+            break;
 
-            Miclase->SSRMS.theta2 = Miclase->SSRMS.theta2 - dtheta;
-            Miclase->SSRMS.AplicarTHz(Miclase->SSRMS.theta2, {0, 0, 6});     //b2
-            Miclase->SSRMS.THList[4] = Miclase->SSRMS.THz;
+        case 52:
+
+            SSRMS.theta5 = SSRMS.theta5 - dtheta;
+            SSRMS.AplicarTHz(SSRMS.theta5, {0, 0, 6});     //b5
+            SSRMS.THList[10] = SSRMS.THz;
 
 
             break;
 
-        case 103:
+        case 53:SSRMS.theta6 = SSRMS.theta6 + dtheta;
+            SSRMS.AplicarTHz(SSRMS.theta6, {0, 0, 6});     //b6
+            SSRMS.THList[12] = SSRMS.THz;
+            break;
 
-            Miclase->SSRMS.theta3 = Miclase->SSRMS.theta3 + dtheta;
-            Miclase->SSRMS.AplicarTHz(Miclase->SSRMS.theta3, {0, 0, 6});     //b3
-            Miclase->SSRMS.THList[6] = Miclase->SSRMS.THz;
+        case 54:
+
+            SSRMS.theta6 = SSRMS.theta6 - dtheta;
+            SSRMS.AplicarTHz(SSRMS.theta6, {0, 0, 6});      //b6
+            SSRMS.THList[12] = SSRMS.THz;
+            break;
+
+        case 55:SSRMS.theta7 = SSRMS.theta7 - dtheta;
+            SSRMS.AplicarTHz(SSRMS.theta7, {0, 0, 0});     //b7, efector final
+            SSRMS.THList[14] = SSRMS.THz;
+            break;
+
+
+        case 56:
+
+            SSRMS.theta1 = SSRMS.theta1 - dtheta;
+            SSRMS.AplicarTHz(SSRMS.theta1, {0, 0, 2.5});     //b1
+            SSRMS.THList[2] = SSRMS.THz;
+
 
             break;
-        case 105:
 
-            Miclase->SSRMS.theta3 = Miclase->SSRMS.theta3 - dtheta;
-            Miclase->SSRMS.AplicarTHz(Miclase->SSRMS.theta3, {0, 0, 6});       //b3
-            Miclase->SSRMS.THList[6] = Miclase->SSRMS.THz;
+
+        case 57:
+
+            SSRMS.theta2 = SSRMS.theta2 - dtheta;
+            SSRMS.AplicarTHz(SSRMS.theta2, {0, 0, 6});     //b2
+            SSRMS.THList[4] = SSRMS.THz;
+
+
+            break;
+
+        case 58:
+
+            SSRMS.theta3 = SSRMS.theta3 + dtheta;
+            SSRMS.AplicarTHz(SSRMS.theta3, {0, 0, 6});     //b3
+            SSRMS.THList[6] = SSRMS.THz;
+
+            break;
+        case 59:
+
+            SSRMS.theta3 = SSRMS.theta3 - dtheta;
+            SSRMS.AplicarTHz(SSRMS.theta3, {0, 0, 6});       //b3
+            SSRMS.THList[6] = SSRMS.THz;
 
             break;
 
     }
+    glutPostRedisplay();
 }
 
 static void Draw(void)
@@ -194,21 +209,18 @@ static void Draw(void)
     Vector3d eye = camera.getEye();
     Vector3d up = camera.getUp();
 
-    //std::cout << eye(0) << " " << eye(1) << " " << eye(2) << std::endl;
 
     gluLookAt(eye(0), eye(1), eye(2),
               center(0), center(1), center(2),
               up(0), up(1), up(2));
 
-    info_msg(center);
-    info_msg(eye);
 
-    for (auto &position : positions) {
-        glPushMatrix();
-        glTranslated(position[0], position[1], position[2]);
-        glutSolidSphere(1.0, 50, 50);
-        glPopMatrix();
-    }
+    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {100, 0, 0}, {1, 0.0, 0.0}, 0.03, 1);
+    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 100, 0}, {0.0, 1, 0.0}, 0.03, 1);
+    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 0, 100}, {0.0, 0.0, 1}, 0.03, 1);
+
+/// //////////////////////////// PARTES A AGREGAR
+    // SSRMS.renderizar();
 
     if (doubleBuffer) {
         glutSwapBuffers();
@@ -216,6 +228,18 @@ static void Draw(void)
     else {
         glFlush();
     }
+}
+
+void Reshape(int width, int height)
+{
+
+    glViewport(0, 0, width, height);        // reset the viewport to new dimensions
+    glMatrixMode(GL_PROJECTION);            // set projection matrix current matrix
+    glLoadIdentity();                        // reset projection matrix
+    // calculate aspect ratio of window
+    gluPerspective(52.0f, (GLdouble) width / (GLdouble) height, 1.0f, 1000.0f);
+    glMatrixMode(GL_MODELVIEW);                // set modelview matrix
+    glLoadIdentity();                        // reset modelview matrix
 }
 
 static void Args(int argc, char **argv)
@@ -258,12 +282,14 @@ int main(int argc, char **argv)
     Init();
     glutKeyboardFunc(Key);
     glutDisplayFunc(Draw);
+    glutReshapeFunc(Reshape);
     glutPassiveMotionFunc(motionFunc);
     glutTimerFunc(100, glutTimer, 100);
     glutMainLoop();
     return 0;
     /* ANSI C requires main to return int. */
 }
+
 
 
 

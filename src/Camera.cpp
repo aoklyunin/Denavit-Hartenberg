@@ -13,6 +13,7 @@ Camera::Camera()
     pos << 0, 0, 0;
     up << 0, 0, 1;
 }
+
 Vector3d Camera::getEye()
 {
     return dir + pos;
@@ -29,17 +30,26 @@ void Camera::rotateX(double alpha)
 {
 
     Matrix3d R = getRMatrix(alpha, up);
+
     dir = R * dir;
 
+    Matrix3d Rup = getRMatrix(alpha, Vector3d(0, 0, 1));
+    up = Rup * up;
 }
 
 void Camera::rotateY(double alpha)
 {
-    Vector3d r = up.cross(dir).normalized();
-    Matrix3d R = getRMatrix(alpha, r);
+    double cDir = dir.dot(Vector3d(0, 0, 1));
 
-    up = R * up;
-    dir = R * dir;
+    // при маленьких углах начинается синуглярность, не даём посмотреть камерой строго вверх и строго вниз
+    if ((cDir < 0.7 && alpha < 0) || (cDir > -0.7 && alpha > 0)) {
+
+        Vector3d r = up.cross(dir).normalized();
+        Matrix3d R = getRMatrix(alpha, r);
+
+        up = R * up;
+        dir = R * dir;
+    }
 
 }
 void Camera::moveRight(double d)
@@ -59,4 +69,10 @@ void Camera::moveForward(double d)
 void Camera::moveBack(double d)
 {
     pos = pos + dir * d;
+}
+Camera::Camera(Vector3d _pos, Vector3d _dir, Vector3d _up)
+{
+    pos = _pos;
+    dir = _dir;
+    up = _up;
 }

@@ -11,16 +11,16 @@ modelo3D::modelo3D()
     ntriangles = 0;
 
 
-    BFRx.identity(3);
-    BFRy.identity(3);
-    BFRz.identity(3);
-    LARx.identity(3);
-    LARy.identity(3);
-    LARz.identity(3);
-    R.identity(3);  //accumulated rotations
-    Rz.identity(3);
-    Rx.identity(3);
-    Ry.identity(3);
+    BFRx = Matrix<double, 3, 3>::Identity();
+    BFRy = Matrix<double, 3, 3>::Identity();
+    BFRz = Matrix<double, 3, 3>::Identity();
+    LARx = Matrix<double, 3, 3>::Identity();
+    LARy = Matrix<double, 3, 3>::Identity();
+    LARz = Matrix<double, 3, 3>::Identity();
+    R = Matrix<double, 3, 3>::Identity();  //accumulated rotations
+    Rz = Matrix<double, 3, 3>::Identity();
+    Rx = Matrix<double, 3, 3>::Identity();
+    Ry = Matrix<double, 3, 3>::Identity();
     ///***************
     //IRx.identity(3);
     //IRy.identity(3);
@@ -56,8 +56,8 @@ void modelo3D::leer(std::string nombre)
         ntriangles = size;
         triangulos = new Triangle3D[size];
         Triangle3D triangle;
-        vector3d P0, P1, P2;
-        vector3d normal;
+        Vector3d P0, P1, P2;
+        Vector3d normal;
         float p0[3], p1[3], p2[3], n[3];
         char attribute[2] = "0";
         for (int i = 0; i < size; i++) {
@@ -100,50 +100,26 @@ void modelo3D::leer(std::string nombre)
 void modelo3D::definirRx(float dtheta)
 {
 
-    Rx.aij[0][0] = 1;
-    Rx.aij[0][1] = 0;
-    Rx.aij[0][2] = 0;
-
-    Rx.aij[1][0] = 0;
-    Rx.aij[1][1] = cos(dtheta);
-    Rx.aij[1][2] = -sin(dtheta);
-
-    Rx.aij[2][0] = 0;
-    Rx.aij[2][1] = sin(dtheta);
-    Rx.aij[2][2] = cos(dtheta);
+    Rx << 1, 0, 0,
+        0, cos(dtheta), -sin(dtheta),
+        0, sin(dtheta), cos(dtheta);
 
 }
 void modelo3D::definirRy(float dtheta)
 {
 
 
-    Ry.aij[0][0] = cos(dtheta);
-    Ry.aij[0][1] = 0;
-    Ry.aij[0][2] = sin(dtheta);
-
-    Ry.aij[1][0] = 0;
-    Ry.aij[1][1] = 1;
-    Ry.aij[1][2] = 0;
-
-    Ry.aij[2][0] = -sin(dtheta);
-    Ry.aij[2][1] = 0;
-    Ry.aij[2][2] = cos(dtheta);
+    Ry << cos(dtheta), 0, sin(dtheta),
+        0, 1, 0,
+        -sin(dtheta), 0, cos(dtheta);
 
 }
 void modelo3D::definirRz(float dtheta)
 {
 
-    Rz.aij[0][0] = cos(dtheta);
-    Rz.aij[0][1] = -sin(dtheta);
-    Rz.aij[0][2] = 0;
-
-    Rz.aij[1][0] = sin(dtheta);
-    Rz.aij[1][1] = cos(dtheta);
-    Rz.aij[1][2] = 0;
-
-    Rz.aij[2][0] = 0;
-    Rz.aij[2][1] = 0;
-    Rz.aij[2][2] = 1;
+    Rz << cos(dtheta), -sin(dtheta), 0,
+        sin(dtheta), cos(dtheta), 0,
+        0, 0, 1;
 
 }
 
@@ -154,28 +130,30 @@ void modelo3D::dibujar()
 
     for (int i = 0; i < ntriangles; i++) {
 
-        vector3d v1 = triangulos[i].vertices[0];   //locales son locales
-        vector3d v2 = triangulos[i].vertices[1];
-        vector3d v3 = triangulos[i].vertices[2];
-        vector3d V1, V2, V3;
-        V1 = v1.x * ux + v1.y * uy + v1.z * uz;  // se dibuja en base local en origen de modelo local
-        V2 = v2.x * ux + v2.y * uy + v2.z * uz;
-        V3 = v3.x * ux + v3.y * uy + v3.z * uz;
+        Vector3d v1 = triangulos[i].vertices[0];   //locales son locales
+        Vector3d v2 = triangulos[i].vertices[1];
+        Vector3d v3 = triangulos[i].vertices[2];
+        Vector3d V1, V2, V3;
+
+        V1 = ux * v1(0) + uy * v1(1) + uz * v1(2);  // se dibuja en base local en origen de modelo local
+
+        V2 = v2(0) * ux + v2(1) * uy + v2(2) * uz;
+        V3 = v3(0) * ux + v3(1) * uy + v3(2) * uz;
 
         V1 = O + V1;
         V2 = O + V2;
         V3 = O + V3;
 
-        vector3d d1, d2, n;
+        Vector3d d1, d2, n;
         d1 = V2 - V1;
         d2 = V3 - V1;
-        n = d1 * d2;  ///devuelve el producto vectorial
+        n = d1.cross(d2);  ///devuelve el producto vectorial
         n.normalize();
 
-        glNormal3f(n.x, n.y, n.z);
-        glVertex3f(V1.x, V1.y, V1.z);
-        glVertex3f(V2.x, V2.y, V2.z);
-        glVertex3f(V3.x, V3.y, V3.z);
+        glNormal3f(n(0), n(1), n(2));
+        glVertex3f(V1(0), V1(1), V1(2));
+        glVertex3f(V2(0), V2(1), V2(2));
+        glVertex3f(V3(0), V3(1), V3(2));
     }
 
     glEnd();
@@ -184,7 +162,7 @@ void modelo3D::dibujar()
 void modelo3D::rotarZ()
 {  //global rotation of only model
     for (int i = 0; i < ntriangles; i++) {
-        vector3d v1, v2, v3;
+        Vector3d v1, v2, v3;
         v1 = triangulos[i].vertices[0];
         v2 = triangulos[i].vertices[1];
         v3 = triangulos[i].vertices[2];
@@ -201,7 +179,7 @@ void modelo3D::rotarZ()
 void modelo3D::rotarY()
 { //global rotation  of only model
     for (int i = 0; i < ntriangles; i++) {
-        vector3d v1, v2, v3;
+        Vector3d v1, v2, v3;
         v1 = triangulos[i].vertices[0];
         v2 = triangulos[i].vertices[1];
         v3 = triangulos[i].vertices[2];
@@ -218,7 +196,7 @@ void modelo3D::rotarY()
 void modelo3D::rotarX()
 {//global rotation  of only model
     for (int i = 0; i < ntriangles; i++) {
-        vector3d v1, v2, v3;
+        Vector3d v1, v2, v3;
         v1 = triangulos[i].vertices[0];
         v2 = triangulos[i].vertices[1];
         v3 = triangulos[i].vertices[2];
@@ -233,10 +211,10 @@ void modelo3D::rotarX()
     R = Rx * R;
 }
 
-void modelo3D::trasladar(vector3d A)
+void modelo3D::trasladar(Vector3d A)
 {  //local traslation
     for (int i = 0; i < ntriangles; i++) {
-        vector3d v1, v2, v3;
+        Vector3d v1, v2, v3;
         v1 = triangulos[i].vertices[0];
         v2 = triangulos[i].vertices[1];
         v3 = triangulos[i].vertices[2];
@@ -248,139 +226,6 @@ void modelo3D::trasladar(vector3d A)
     }
 
 }
-
-void modelo3D::BodyFramedefinirRx(float dtheta)
-{
-
-
-    BFRx.aij[0][0] = 1;
-    BFRx.aij[0][1] = 0;
-    BFRx.aij[0][2] = 0;
-
-    BFRx.aij[1][0] = 0;
-    BFRx.aij[1][1] = cos(dtheta);
-    BFRx.aij[1][2] = -sin(dtheta);
-
-    BFRx.aij[2][0] = 0;
-    BFRx.aij[2][1] = sin(dtheta);
-    BFRx.aij[2][2] = cos(dtheta);
-
-}
-void modelo3D::BodyFramedefinirRy(float dtheta)
-{
-
-    BFRy.aij[0][0] = cos(dtheta);
-    BFRy.aij[0][1] = 0;
-    BFRy.aij[0][2] = sin(dtheta);
-
-    BFRy.aij[1][0] = 0;
-    BFRy.aij[1][1] = 1;
-    BFRy.aij[1][2] = 0;
-
-    BFRy.aij[2][0] = -sin(dtheta);
-    BFRy.aij[2][1] = 0;
-    BFRy.aij[2][2] = cos(dtheta);
-
-}
-void modelo3D::BodyFramedefinirRz(float dtheta)
-{
-
-    BFRz.aij[0][0] = cos(dtheta);
-    BFRz.aij[0][1] = -sin(dtheta);
-    BFRz.aij[0][2] = 0;
-
-    BFRz.aij[1][0] = sin(dtheta);
-    BFRz.aij[1][1] = cos(dtheta);
-    BFRz.aij[1][2] = 0;
-
-    BFRz.aij[2][0] = 0;
-    BFRz.aij[2][1] = 0;
-    BFRz.aij[2][2] = 1;
-
-}
-
-void modelo3D::definir_x_LocalAxisRotation(float dtheta)
-{
-    LARx.aij[0][0] = 1;
-    LARx.aij[0][1] = 0;
-    LARx.aij[0][2] = 0;
-
-    LARx.aij[1][0] = 0;
-    LARx.aij[1][1] = cos(dtheta);
-    LARx.aij[1][2] = sin(dtheta);
-
-    LARx.aij[2][0] = 0;
-    LARx.aij[2][1] = -sin(dtheta);
-    LARx.aij[2][2] = cos(dtheta);
-}
-void modelo3D::definir_y_LocalAxisRotation(float dtheta)
-{
-
-
-    LARy.aij[0][0] = cos(dtheta);
-    LARy.aij[0][1] = 0;
-    LARy.aij[0][2] = sin(dtheta);
-
-    LARy.aij[1][0] = 0;
-    LARy.aij[1][1] = 1;
-    LARy.aij[1][2] = 0;
-
-    LARy.aij[2][0] = -sin(dtheta);
-    LARy.aij[2][1] = 0;
-    LARy.aij[2][2] = cos(dtheta);
-
-}
-void modelo3D::definir_z_LocalAxisRotation(float dtheta)
-{
-
-    LARz.aij[0][0] = cos(dtheta);
-    LARz.aij[0][1] = -sin(dtheta);
-    LARz.aij[0][2] = 0;
-
-    LARz.aij[1][0] = sin(dtheta);
-    LARz.aij[1][1] = cos(dtheta);
-    LARz.aij[1][2] = 0;
-
-    LARz.aij[2][0] = 0;
-    LARz.aij[2][1] = 0;
-    LARz.aij[2][2] = 1;
-
-}
-
-void modelo3D::x_LocalAxisRotation()
-{
-    R = LARx * R;
-    vector3d Lx(1, 0, 0), Ly(0, 1, 0), Lz(0, 0, 1);///definir vectores
-    Lx = LARx * Lx;
-    Ly = LARx * Ly;
-    Lz = LARx * Lz;
-    ux = Lx.x * ux + Lx.y * uy + Lx.z * uz;
-    uy = Ly.x * ux + Ly.y * uy + Ly.z * uz;
-    uz = Lz.x * ux + Lz.y * uy + Lz.z * uz;
-}
-void modelo3D::y_LocalAxisRotation()
-{
-    R = LARy * R;
-    vector3d Lx(1, 0, 0), Ly(0, 1, 0), Lz(0, 0, 1);///definir vectores
-    Lx = LARy * Lx;
-    Ly = LARy * Ly;
-    Lz = LARy * Lz;
-    ux = Lx.x * ux + Lx.y * uy + Lx.z * uz;
-    uy = Ly.x * ux + Ly.y * uy + Ly.z * uz;
-    uz = Lz.x * ux + Lz.y * uy + Lz.z * uz;
-}
-void modelo3D::z_LocalAxisRotation()
-{
-    R = LARz * R;
-    vector3d Lx(1, 0, 0), Ly(0, 1, 0), Lz(0, 0, 1);///definir vectores
-    Lx = LARz * Lx;
-    Ly = LARz * Ly;
-    Lz = LARz * Lz;
-    ux = Lx.x * ux + Lx.y * uy + Lx.z * uz;
-    uy = Ly.x * ux + Ly.y * uy + Ly.z * uz;
-    uz = Lz.x * ux + Lz.y * uy + Lz.z * uz;
-}
-
 void modelo3D::BodyFramerotarX()
 {
     R = BFRx * R;
@@ -409,16 +254,11 @@ void modelo3D::IRx(){
 
 }*/
 
-void modelo3D::BodyFrametrasladar(vector3d A)
+Vector3d modelo3D::LocalMassCenter() const
 {
-    O = A;
-
-};
-vector3d modelo3D::LocalMassCenter() const
-{
-    vector3d center;
+    Vector3d center;
     for (int i = 0; i < ntriangles; i++) {
-        vector3d v1, v2, v3;
+        Vector3d v1, v2, v3;
         v1 = triangulos[i].vertices[0];
         v2 = triangulos[i].vertices[1];
         v3 = triangulos[i].vertices[2];
@@ -427,17 +267,17 @@ vector3d modelo3D::LocalMassCenter() const
     }
     center = (1.0 / ntriangles) * center;
     std::cout << " Local center mass is :" << std::endl;
-    center.mostrar();
+    std::cout << center << std::endl;
     return center;
 
 }
-vector3d modelo3D::GlobalCenterMass() const
+Vector3d modelo3D::GlobalCenterMass() const
 {
-    vector3d L = LocalMassCenter();
+    Vector3d L = LocalMassCenter();
 
-    vector3d C = O + L.x * ux + L.y * uy + L.z * uz;
+    Vector3d C = O + L(0) * ux + L(1) * uy + L(2) * uz;
     std::cout << " Global center mass is: " << std::endl;
-    C.mostrar();
+    std::cout << C << std::endl;
     return C;
 
 }
