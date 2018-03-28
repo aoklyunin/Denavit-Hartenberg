@@ -1,9 +1,11 @@
-#ifndef ROBOT_H
-#define ROBOT_H
-#include "modelo3D.h"
+#pragma once
+
 #include <vector>
 #include <cstdlib>
 #include <Eigen/Dense>
+#include <cmath>
+
+#include "modelo3D.h"
 #include "OpenGLWrapper.h"
 
 using namespace Eigen;
@@ -47,5 +49,3 @@ void DefinirTHy(float theta, Vector3d d);
 void DefinirTHz(float theta, Vector3d d);
 
 };
-
-#endif // ROBOT_H

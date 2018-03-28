@@ -1,4 +1,5 @@
 #include "../include/Triangle3D.h"
+
 //Copyright (C) <2017>  <Eliseo Rivera Silva> curso.tareas@gmail.com
 
 Triangle3D::Triangle3D()

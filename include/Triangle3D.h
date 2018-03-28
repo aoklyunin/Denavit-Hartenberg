@@ -1,5 +1,4 @@
-#ifndef TRIANGLE3D_H
-#define TRIANGLE3D_H
+#pragma once
 
 #include <Eigen/Dense>
 
@@ -17,5 +16,3 @@ void definirRz(float dtheta);
 void dibujar();
 void rotar(float dtheta);
 };
-
-#endif // TRIANGLE3D_H

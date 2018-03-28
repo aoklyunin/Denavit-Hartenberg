@@ -1,5 +1,5 @@
-#ifndef MODELO3D_H
-#define MODELO3D_H
+#pragma once
+
 #include"Triangle3D.h"
 #include<fstream>
 #include <iostream>
@@ -48,5 +48,3 @@ public:
     Vector3d GlobalCenterMass() const;
 
 };
-
-#endif // MODELO3D_H

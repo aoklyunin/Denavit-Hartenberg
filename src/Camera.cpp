@@ -3,8 +3,7 @@
 //
 
 #include "../include/Camera.h"
-#include "../include/userMath.h"
-#include "../include/traces.h"
+
 
 
 Camera::Camera()
@@ -29,11 +28,11 @@ Vector3d Camera::getCenter()
 void Camera::rotateX(double alpha)
 {
 
-    Matrix3d R = getRMatrix(alpha, up);
+    Matrix3d R = OpenGLWrapper::getRMatrix(alpha, up);
 
     dir = R * dir;
 
-    Matrix3d Rup = getRMatrix(alpha, Vector3d(0, 0, 1));
+    Matrix3d Rup = OpenGLWrapper::getRMatrix(alpha, Vector3d(0, 0, 1));
     up = Rup * up;
 }
 
@@ -45,7 +44,7 @@ void Camera::rotateY(double alpha)
     if ((cDir < 0.7 && alpha < 0) || (cDir > -0.7 && alpha > 0)) {
 
         Vector3d r = up.cross(dir).normalized();
-        Matrix3d R = getRMatrix(alpha, r);
+        Matrix3d R = OpenGLWrapper::getRMatrix(alpha, r);
 
         up = R * up;
         dir = R * dir;

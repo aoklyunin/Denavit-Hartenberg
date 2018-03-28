@@ -1,12 +1,11 @@
 //
 // Created by alex on 28.03.18.
 //
-
-#ifndef DENAVIT_HARTENBERG_VISUALIZATION_CAMERA_H
-#define DENAVIT_HARTENBERG_VISUALIZATION_CAMERA_H
-
+#pragma once
 
 #include <Eigen/Dense>
+#include "OpenGLWrapper.h"
+#include "traces.h"
 
 using namespace Eigen;
 
@@ -33,4 +32,3 @@ public:
 };
 
 
-#endif //DENAVIT_HARTENBERG_VISUALIZATION_CAMERA_H

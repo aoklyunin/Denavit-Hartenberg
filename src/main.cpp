@@ -4,10 +4,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../include/Robot.h"
-#include "../include/Camera.h"
-#include "../include/traces.h"
 #include "../include/OpenGLWrapper.h"
+#include "../include/Robot.h"
 
 
 Camera camera;
@@ -215,9 +213,9 @@ static void Draw(void)
               up(0), up(1), up(2));
 
 
-    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {100, 0, 0}, {1, 0.0, 0.0}, 0.03, 1);
-    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 100, 0}, {0.0, 1, 0.0}, 0.03, 1);
-    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 0, 100}, {0.0, 0.0, 1}, 0.03, 1);
+    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {10, 0, 0}, {1, 0.0, 0.0}, 0.03, 1);
+    //OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 100, 0}, {0.0, 1, 0.0}, 0.03, 1);
+    //OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 0, 100}, {0.0, 0.0, 1}, 0.03, 1);
 
 /// //////////////////////////// PARTES A AGREGAR
     // SSRMS.renderizar();

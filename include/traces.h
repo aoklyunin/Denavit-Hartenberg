@@ -5,6 +5,10 @@
 #include <tuple>
 #include <vector>
 #include <array>
+#include <stdexcept>
+#include <unistd.h>
+#include <cstdio>
+
 #include "userTime.h"
 #include "formatting.h"
 
