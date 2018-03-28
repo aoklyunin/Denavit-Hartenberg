@@ -66,9 +66,10 @@ void Robot::configurarTH()
 {
     double pi = 3.14;
     // theta, a, d, alpha
+    // надо сделать согнутым
     vector<double> dhParam{0, 40, 2.5, -pi / 2, 0};
     dhParams.push_back(dhParam);
-    dhParam = vector<double>{0, 0, 31.5, 0, 0};
+    dhParam = vector<double>{-pi/2, 0, 31.5, 0, 0};
     dhParams.push_back(dhParam);
     dhParam = vector<double>{pi / 2, 0, 30.5, 0, 0};
     dhParams.push_back(dhParam);
@@ -159,14 +160,10 @@ void Robot::renderizar()
             OpenGLWrapper::vectorVertex(v3);
         }
         glEnd();
-// }
+
         glDisable(GL_BLEND);
 
 
-///DIBUJAR EJES
-
-
-//}
     }
 
 }
