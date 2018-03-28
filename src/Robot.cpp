@@ -5,66 +5,10 @@
 ///Copyright (C) <2017>  <Eliseo Rivera> curso.tareas@gmail.com
 Robot::Robot()
 {
-    theta1 = 0;
-    theta2 = 0;
-    theta3 = 0;
-    theta4 = 0;
-    theta5 = 0;
-    theta6 = 0, theta7 = 0;
     THx = Matrix<double, 4, 4>::Identity();
     THy = Matrix<double, 4, 4>::Identity();
     THz = Matrix<double, 4, 4>::Identity();
     TH = Matrix<double, 4, 4>::Identity();
-
-}
-
-void Robot::DefinirTHx(float dtheta, Vector3d d)
-{
-
-    THx << 1, 0, 0, d(0),
-        0, cos(dtheta), -sin(dtheta), d(1),
-        0, sin(dtheta), cos(dtheta), d(2),
-        0, 0, 0, 1;
-
-}
-void Robot::DefinirTHy(float dtheta, Vector3d d)
-{
-
-
-    THy << cos(dtheta), 0, sin(dtheta), d(0),
-        0, 1, 0, d(1),
-        -sin(dtheta), 0, cos(dtheta), d(2),
-        0, 0, 0, 1;
-
-}
-
-void Robot::DefinirTHz(float dtheta, Vector3d d)
-{
-
-    THz << cos(dtheta), -sin(dtheta), 0, d(0),
-        sin(dtheta), cos(dtheta), 0, d(1),
-        0, 0, 1, d(2),
-        0, 0, 0, 1;
-
-}
-
-void Robot::AplicarTHx(float theta, Vector3d d)
-{
-    theta = theta * PI / 180.0;
-
-    DefinirTHx(theta, d);
-
-}
-void Robot::AplicarTHy(float theta, Vector3d d)
-{
-    theta = theta * PI / 180.0;
-    DefinirTHy(theta, d);
-
-}
-void Robot::AplicarTHz(float theta, Vector3d d)
-{
-    theta = theta * PI / 180.0;
-    DefinirTHz(theta, d);
 
 }
 
@@ -112,48 +56,40 @@ void Robot::inicializar()
 
 }
 
+void Robot::rotateLink(int j, double alpha)
+{
+    dhParams.at(j).at(4)+=alpha;
+    info_msg(dhParams.at(j));
+}
+
 void Robot::configurarTH()
 {
-    AplicarTHz(0, {0, 0, 0}); //base
-    THList.push_back(THz);
-    AplicarTHx(0, {0, 0, 0}); //base
-    THList.push_back(THx);
+    vector<double> dhParam{0, 0, 0, 0, 0};
+    dhParams.push_back(dhParam);
+    dhParam = vector<double>{0, 2.5, 10, -90, 0};
+    dhParams.push_back(dhParam);
+    dhParam = vector<double>{0, 20, 0, 0, 0};
+    dhParams.push_back(dhParam);
+    dhParam = vector<double>{90, 40, 0, -90, 0};
+    dhParams.push_back(dhParam);
+    dhParam = vector<double>{0, 70, 0, -90, 0};
+    dhParams.push_back(dhParam);
 
-    AplicarTHz(0, {0, 0, 2.5}); //b1
-    THList.push_back(THz);
-    AplicarTHx(-90, {0, 0, 0}); //b1
-    THList.push_back(THx);
+}
 
-    AplicarTHz(0, {0, 0, 6}); //b2
-    THList.push_back(THz);
-    AplicarTHx(-90, {0, 0, 0}); //b2
-    THList.push_back(THx);
+Matrix4d getDHMatrix(vector<double> dh)
+{
+    double theta = dh.at(0) + dh.at(4);
+    double d = dh.at(1);
+    double a = dh.at(2);
+    double alpha = dh.at(3);
 
-    AplicarTHz(0, {0, 0, 6}); //b3
-    THList.push_back(THz);
-    AplicarTHx(0, {12, 0, 0}); //b3
-    THList.push_back(THx);
-
-    AplicarTHz(0, {0, 0, 1}); //b4
-    THList.push_back(THz);
-    AplicarTHx(0, {12, 0, 0}); //b4
-    THList.push_back(THx);
-
-    AplicarTHz(0, {0, 0, 6}); //b5
-    THList.push_back(THz);
-    AplicarTHx(-90, {0, 0, 0}); //b5
-    THList.push_back(THx);
-
-    AplicarTHz(0, {0, 0, 6}); //b6
-    THList.push_back(THz);
-    AplicarTHx(-90, {0, 0, 0}); //b6
-    THList.push_back(THx);
-
-    AplicarTHz(0, {0, 0, 0.0}); //gripe
-    THList.push_back(THz);
-    AplicarTHx(0, {0, 0, 0}); //gripe
-    THList.push_back(THx);
-
+    Matrix4d m;
+    m << cos(theta), -sin(theta) * cos(alpha), sin(theta) * sin(alpha), a * cos(theta),
+        sin(theta), cos(theta) * cos(alpha), -cos(theta) * sin(alpha), a * sin(theta),
+        0, sin(alpha), cos(alpha), d,
+        0, 0, 0, 1;
+    return m;
 }
 void Robot::renderizar()
 {
@@ -162,73 +98,66 @@ void Robot::renderizar()
 
     modelo3D *model;
 
-    for (int m = 0; m < modelos.size(); m++) {
-        info_msg(m);
-        model = modelos[m];
-        TH = TH * THList[2 * m + 0] * THList[2 * m + 1];
+    for (auto &dhParam : dhParams) {
+        Matrix4d DH = getDHMatrix(dhParam);
+        //info_msg("test");
+        // info_msg(DH);
+        TH = TH * DH;
 
+        Vector3d nx(TH(0, 0), TH(1, 0), TH(2, 0));
+        Vector3d ny(TH(0, 1), TH(1, 1), TH(2, 1));
+        Vector3d nz(TH(0, 2), TH(1, 2), TH(2, 2));
 
-        Vector3d ux, uy, uz, O;
+        Vector3d pos(TH(0, 3), TH(1, 3), TH(2, 3));
 
-        Vector4d ux4(1, 0, 0, 1), uy4(0, 1, 0, 1), uz4(0, 0, 1, 1), O4(O(0), O(1), O(2), 1);
+       // info_msg(pos);
 
+        OpenGLWrapper::Drawarrow3D(pos, pos + 4 * nx, new double[3]{1, 0.1, 0.2}, 0.3);
+        OpenGLWrapper::Drawarrow3D(pos, pos + 4 * ny, new double[3]{.1, 1, 0.2}, 0.3);
+        OpenGLWrapper::Drawarrow3D(pos, pos + 4 * nz, new double[3]{0.1, 0.2, 1}, 0.3);
 
-        ux4 = TH * ux4 - TH * O4;
-        uy4 = TH * uy4 - TH * O4;
-        uz4 = TH * uz4 - TH * O4;
-        O4 = TH * O4;
-
-
-        ux = {ux4(0, 0), ux4(1, 0), ux4(2, 0)};
-        uy = {uy4(0, 0), uy4(1, 0), uy4(2, 0)};
-        uz = {uz4(0, 0), uz4(1, 0), uz4(2, 0)};
-        O = {O4(0, 0), O4(1, 0), O4(2, 0)};
-
-//if (m<2){
-        OpenGLWrapper::Drawarrow3D(O, O + 4 * ux, new double[3]{1, 0.1, 0.2}, 0.1);
-        OpenGLWrapper::Drawarrow3D(O, O + 4 * uy, new double[3]{.1, 1, 0.2}, 0.1);
-        OpenGLWrapper::Drawarrow3D(O, O + 4 * uz, new double[3]{0.1, 0.2, 1}, 0.1);
-        //  }
-        glColor4f(fabs(cos(m * PI / modelos.size())), fabs(sin(20 * (m - 5) * PI / modelos.size())), 0.2, 0.5);
-
-        glEnable(GL_BLEND);
-        glBegin(GL_TRIANGLES);
-
-        glFrontFace(GL_FRONT_AND_BACK);
-        for (int i = 0; i < model->ntriangles; i++) {
-
-            Vector3d v1 = model->triangulos[i].vertices[0];   //posiciones locales
-            Vector3d v2 = model->triangulos[i].vertices[1];
-            Vector3d v3 = model->triangulos[i].vertices[2];
-            Vector4d v14(v1(0), v1(1), v1(2), 1), v24(v2(0), v2(1), v2(2), 1), v34(v2(0), v2(1), v2(2), 1);
-
-            v14 = TH * v14;
-            v24 = TH * v24;
-            v34 = TH * v34;
-            v1 = {v14(0, 0), v14(1, 0), v14(2, 0)};
-            v2 = {v24(0, 0), v24(1, 0), v24(2, 0)};
-            v3 = {v34(0, 0), v34(1, 0), v34(2, 0)};
-
-
-            Vector4d N, d14, d24;
-            d14 = v24 - v14;
-            d24 = v34 - v14;
-            Vector3d d1, d2, n;
-            d1 = {d14(0, 0), d14(1, 0), d14(2, 0)};
-            d2 = {d24(0, 0), d24(1, 0), d24(2, 0)};
-            n = d1.cross(d2);  ///devuelve el producto vectorial
-            n.normalize();
-
-
-            glNormal3f(n(0), n(1), n(2));
-            glVertex3f(v1(0), v1(1), v1(2));
-            glVertex3f(v2(0), v2(1), v2(2));
-            glVertex3f(v3(0), v3(1), v3(2));
-        }
-        glEnd();
-// }
-        glDisable(GL_BLEND);
-
+//      model = modelos[m];
+//        //  }
+//        glColor4f(fabs(cos(m * PI / modelos.size())), fabs(sin(20 * (m - 5) * PI / modelos.size())), 0.2, 0.5);
+//
+//        glEnable(GL_BLEND);
+//        glBegin(GL_TRIANGLES);
+//
+//        glFrontFace(GL_FRONT_AND_BACK);
+//        for (int i = 0; i < model->ntriangles; i++) {
+//
+//            Vector3d v1 = model->triangulos[i].vertices[0];   //posiciones locales
+//            Vector3d v2 = model->triangulos[i].vertices[1];
+//            Vector3d v3 = model->triangulos[i].vertices[2];
+//            Vector4d v14(v1(0), v1(1), v1(2), 1), v24(v2(0), v2(1), v2(2), 1), v34(v2(0), v2(1), v2(2), 1);
+//
+//            v14 = TH * v14;
+//            v24 = TH * v24;
+//            v34 = TH * v34;
+//            v1 = {v14(0, 0), v14(1, 0), v14(2, 0)};
+//            v2 = {v24(0, 0), v24(1, 0), v24(2, 0)};
+//            v3 = {v34(0, 0), v34(1, 0), v34(2, 0)};
+//
+//
+//            Vector4d N, d14, d24;
+//            d14 = v24 - v14;
+//            d24 = v34 - v14;
+//            Vector3d d1, d2, n;
+//            d1 = {d14(0, 0), d14(1, 0), d14(2, 0)};
+//            d2 = {d24(0, 0), d24(1, 0), d24(2, 0)};
+//            n = d1.cross(d2);  ///devuelve el producto vectorial
+//            n.normalize();
+//
+//
+//            glNormal3f(n(0), n(1), n(2));
+//            glVertex3f(v1(0), v1(1), v1(2));
+//            glVertex3f(v2(0), v2(1), v2(2));
+//            glVertex3f(v3(0), v3(1), v3(2));
+//        }
+//        glEnd();
+//// }
+//        glDisable(GL_BLEND);
+//
 
 ///DIBUJAR EJES
 

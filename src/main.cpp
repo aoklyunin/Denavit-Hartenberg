@@ -70,8 +70,8 @@ static void Init(void)
     glMatrixMode(GL_MODELVIEW);
     glDisable(GL_DITHER);
 
-    camera = Camera(Vector3d(-7.6, -51.0, 12.0),
-                    Vector3d(-0.25, -0.950767, 0).normalized(),
+    camera = Camera(Vector3d(100, 100.0, 12.0),
+                    Vector3d(0.5, 0.5, 0).normalized(),
                     Vector3d(0, 0, 1));
 
     SSRMS.inicializar();///cargar modelos
@@ -87,6 +87,7 @@ static void Key(unsigned char key, int x, int y)
     std::cout << (int) key << std::endl;
 
     double deltaPos = 1;
+    double deltaAlpha = 0.1;
 
     switch (key) {
         case 27:
@@ -105,88 +106,44 @@ static void Key(unsigned char key, int x, int y)
 
             break;
 
-        case 49:
-
-            SSRMS.theta4 = SSRMS.theta4 + dtheta;
-            SSRMS.AplicarTHz(SSRMS.theta4, {0, 0, 1});   //b4
-            SSRMS.THList[8] = SSRMS.THz;
-
+        case 49:SSRMS.rotateLink(0, deltaAlpha);
 
             break;
 
-        case 50:
-
-            SSRMS.theta4 = SSRMS.theta4 - dtheta;
-            SSRMS.AplicarTHz(SSRMS.theta4, {0, 0, 1});   //b4
-            SSRMS.THList[8] = SSRMS.THz;
-
+        case 50:SSRMS.rotateLink(0, -deltaAlpha);
 
             break;
 
 
-        case 51:SSRMS.theta5 = SSRMS.theta5 + dtheta;
-            SSRMS.AplicarTHz(SSRMS.theta5, {0, 0, 6});    //b5
-            SSRMS.THList[10] = SSRMS.THz;
-            break;
-
-        case 52:
-
-            SSRMS.theta5 = SSRMS.theta5 - dtheta;
-            SSRMS.AplicarTHz(SSRMS.theta5, {0, 0, 6});     //b5
-            SSRMS.THList[10] = SSRMS.THz;
-
+        case 51:SSRMS.rotateLink(1, deltaAlpha);
 
             break;
 
-        case 53:SSRMS.theta6 = SSRMS.theta6 + dtheta;
-            SSRMS.AplicarTHz(SSRMS.theta6, {0, 0, 6});     //b6
-            SSRMS.THList[12] = SSRMS.THz;
-            break;
-
-        case 54:
-
-            SSRMS.theta6 = SSRMS.theta6 - dtheta;
-            SSRMS.AplicarTHz(SSRMS.theta6, {0, 0, 6});      //b6
-            SSRMS.THList[12] = SSRMS.THz;
-            break;
-
-        case 55:SSRMS.theta7 = SSRMS.theta7 - dtheta;
-            SSRMS.AplicarTHz(SSRMS.theta7, {0, 0, 0});     //b7, efector final
-            SSRMS.THList[14] = SSRMS.THz;
-            break;
-
-
-        case 56:
-
-            SSRMS.theta1 = SSRMS.theta1 - dtheta;
-            SSRMS.AplicarTHz(SSRMS.theta1, {0, 0, 2.5});     //b1
-            SSRMS.THList[2] = SSRMS.THz;
-
+        case 52:SSRMS.rotateLink(1, -deltaAlpha);
 
             break;
 
-
-        case 57:
-
-            SSRMS.theta2 = SSRMS.theta2 - dtheta;
-            SSRMS.AplicarTHz(SSRMS.theta2, {0, 0, 6});     //b2
-            SSRMS.THList[4] = SSRMS.THz;
-
+        case 53:SSRMS.rotateLink(2, deltaAlpha);
 
             break;
 
-        case 58:
-
-            SSRMS.theta3 = SSRMS.theta3 + dtheta;
-            SSRMS.AplicarTHz(SSRMS.theta3, {0, 0, 6});     //b3
-            SSRMS.THList[6] = SSRMS.THz;
+        case 54:SSRMS.rotateLink(2, -deltaAlpha);
 
             break;
-        case 59:
 
-            SSRMS.theta3 = SSRMS.theta3 - dtheta;
-            SSRMS.AplicarTHz(SSRMS.theta3, {0, 0, 6});       //b3
-            SSRMS.THList[6] = SSRMS.THz;
+        case 55:SSRMS.rotateLink(3, deltaAlpha);
+
+            break;
+
+        case 56:SSRMS.rotateLink(3, -deltaAlpha);
+
+            break;
+
+        case 57:SSRMS.rotateLink(4, deltaAlpha);
+
+            break;
+
+        case 58:SSRMS.rotateLink(4, -deltaAlpha);
 
             break;
 
@@ -217,8 +174,12 @@ static void Draw(void)
     OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 100, 0}, new double[3]{0.0, 1, 0.0}, 1);
     OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 0, 100}, new double[3]{0.0, 0.0, 1}, 1);
 
+    glPushMatrix();
+        glTranslated(30,30,0);
+        SSRMS.renderizar();
+    glPopMatrix();
 
-    SSRMS.renderizar();
+
 
     if (doubleBuffer) {
         glutSwapBuffers();
