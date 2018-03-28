@@ -9,12 +9,22 @@ find_package(GLUT REQUIRED)
 
 include_directories(${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS})
 
+#
+# rhreads
+#
+FIND_PACKAGE(Threads REQUIRED)
+
+#
+# eigen
+#
+FIND_PACKAGE(Eigen3 REQUIRED Core)
+INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIRS})
 
 #FIND_PACKAGE(GL REQUIRED)
 
 #add_executable(dh_vis windows_old/main_windows.cpp src/ClaseOpenGL.cpp src/Matrix.cpp src/modelo3D.cpp src/Robot.cpp src/vector3d.cpp src/Triangle3D.cpp )
 
 
-add_executable(dh_vis src/main.cpp src/ClaseOpenGL.cpp src/Matrix.cpp src/modelo3D.cpp src/Robot.cpp src/vector3d.cpp src/Triangle3D.cpp include/ClaseOpenGL.h include/vector3d.h include/modelo3D.h include/Triangle3D.h include/Robot.h include/Matrix.h)
+add_executable(dh_vis src/main.cpp src/ClaseOpenGL.cpp src/Matrix.cpp src/modelo3D.cpp src/Robot.cpp src/vector3d.cpp src/Triangle3D.cpp include/ClaseOpenGL.h include/vector3d.h include/modelo3D.h include/Triangle3D.h include/Robot.h include/Matrix.h src/Camera.cpp include/Camera.h include/traces.h src/traces.cpp include/formatting.h include/userTime.h include/userMath.h)
 
 target_link_libraries(dh_vis ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
