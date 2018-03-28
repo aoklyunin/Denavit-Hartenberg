@@ -55,7 +55,7 @@ static void Init(void)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_DEPTH_TEST);                    // hidden surface removal
     glShadeModel(GL_SMOOTH);                    // use smooth shading
-    glEnable(GL_LIGHTING);
+    //glEnable(GL_LIGHTING);
 
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
@@ -74,8 +74,8 @@ static void Init(void)
                     Vector3d(0.5, 0.5, 0).normalized(),
                     Vector3d(0, 0, 1));
 
-    SSRMS.inicializar();///cargar modelos
-    SSRMS.configurarTH();///Posiciones de las piezas
+    SSRMS.inicializar(); ///cargar modelos
+    SSRMS.configurarTH(); ///Posiciones de las piezas
 
 
 }

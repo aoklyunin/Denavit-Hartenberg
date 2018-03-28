@@ -58,23 +58,26 @@ void Robot::inicializar()
 
 void Robot::rotateLink(int j, double alpha)
 {
-    dhParams.at(j).at(4)+=alpha;
+    dhParams.at(j).at(4) += alpha;
     info_msg(dhParams.at(j));
 }
 
 void Robot::configurarTH()
 {
-    vector<double> dhParam{0, 0, 0, 0, 0};
+    double pi = 3.14;
+    // theta, a, d, alpha
+    vector<double> dhParam{0, 40, 2.5, -pi / 2, 0};
     dhParams.push_back(dhParam);
-    dhParam = vector<double>{0, 2.5, 10, -90, 0};
+    dhParam = vector<double>{0, 0, 31.5, 0, 0};
     dhParams.push_back(dhParam);
-    dhParam = vector<double>{0, 20, 0, 0, 0};
+    dhParam = vector<double>{-pi / 2, 0, 30.5, -pi / 2, 0};
     dhParams.push_back(dhParam);
-    dhParam = vector<double>{90, 40, 0, -90, 0};
+    dhParam = vector<double>{0, 36.5 + 18, 0, pi / 2, 0};
     dhParams.push_back(dhParam);
-    dhParam = vector<double>{0, 70, 0, -90, 0};
+    dhParam = vector<double>{0, 0, 0, -pi / 2, 0};
     dhParams.push_back(dhParam);
-
+    dhParam = vector<double>{0, 14.8, 0, 0, 0};
+    dhParams.push_back(dhParam);
 }
 
 Matrix4d getDHMatrix(vector<double> dh)
@@ -110,7 +113,7 @@ void Robot::renderizar()
 
         Vector3d pos(TH(0, 3), TH(1, 3), TH(2, 3));
 
-       // info_msg(pos);
+        // info_msg(pos);
 
         OpenGLWrapper::Drawarrow3D(pos, pos + 4 * nx, new double[3]{1, 0.1, 0.2}, 0.3);
         OpenGLWrapper::Drawarrow3D(pos, pos + 4 * ny, new double[3]{.1, 1, 0.2}, 0.3);
