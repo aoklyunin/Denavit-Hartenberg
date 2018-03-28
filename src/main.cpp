@@ -2,7 +2,6 @@
 #include <GL/glut.h>
 
 #include <string.h>
-#include <stdlib.h>
 #include <stdio.h>
 #include "../include/OpenGLWrapper.h"
 #include "../include/Robot.h"
@@ -61,6 +60,7 @@ static void Init(void)
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
     glEnable(GL_LIGHT2);
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_COLOR_MATERIAL);
 
 
@@ -213,12 +213,12 @@ static void Draw(void)
               up(0), up(1), up(2));
 
 
-    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {10, 0, 0}, {1, 0.0, 0.0}, 0.03, 1);
-    //OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 100, 0}, {0.0, 1, 0.0}, 0.03, 1);
-    //OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 0, 100}, {0.0, 0.0, 1}, 0.03, 1);
+    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {100, 0, 0}, new double[3]{1, 0.0, 0.0}, 1);
+    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 100, 0}, new double[3]{0.0, 1, 0.0}, 1);
+    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 0, 100}, new double[3]{0.0, 0.0, 1}, 1);
 
-/// //////////////////////////// PARTES A AGREGAR
-    // SSRMS.renderizar();
+
+    SSRMS.renderizar();
 
     if (doubleBuffer) {
         glutSwapBuffers();

@@ -158,13 +158,12 @@ void Robot::configurarTH()
 void Robot::renderizar()
 {
 
-
     TH = Matrix<double, 4, 4>::Identity();
 
     modelo3D *model;
 
     for (int m = 0; m < modelos.size(); m++) {
-
+        info_msg(m);
         model = modelos[m];
         TH = TH * THList[2 * m + 0] * THList[2 * m + 1];
 
@@ -186,9 +185,9 @@ void Robot::renderizar()
         O = {O4(0, 0), O4(1, 0), O4(2, 0)};
 
 //if (m<2){
-        OpenGLWrapper::Drawarrow3D(O, O + 4 * ux, {1, 0.1, 0.2}, 0.03, 0.1);
-        OpenGLWrapper::Drawarrow3D(O, O + 4 * uy, {.1, 1, 0.2}, 0.03, 0.1);
-        OpenGLWrapper::Drawarrow3D(O, O + 4 * uz, {0.1, 0.2, 1}, 0.03, 0.1);
+        OpenGLWrapper::Drawarrow3D(O, O + 4 * ux, new double[3]{1, 0.1, 0.2}, 0.1);
+        OpenGLWrapper::Drawarrow3D(O, O + 4 * uy, new double[3]{.1, 1, 0.2}, 0.1);
+        OpenGLWrapper::Drawarrow3D(O, O + 4 * uz, new double[3]{0.1, 0.2, 1}, 0.1);
         //  }
         glColor4f(fabs(cos(m * PI / modelos.size())), fabs(sin(20 * (m - 5) * PI / modelos.size())), 0.2, 0.5);
 
@@ -217,7 +216,7 @@ void Robot::renderizar()
             Vector3d d1, d2, n;
             d1 = {d14(0, 0), d14(1, 0), d14(2, 0)};
             d2 = {d24(0, 0), d24(1, 0), d24(2, 0)};
-            n = d1 .cross(d2);  ///devuelve el producto vectorial
+            n = d1.cross(d2);  ///devuelve el producto vectorial
             n.normalize();
 
 
