@@ -70,9 +70,9 @@ void Robot::configurarTH()
     dhParams.push_back(dhParam);
     dhParam = vector<double>{0, 0, 31.5, 0, 0};
     dhParams.push_back(dhParam);
-    dhParam = vector<double>{-pi / 2, 0, 30.5, -pi / 2, 0};
+    dhParam = vector<double>{pi / 2, 0, 30.5, 0, 0};
     dhParams.push_back(dhParam);
-    dhParam = vector<double>{0, 36.5 + 18, 0, pi / 2, 0};
+    dhParam = vector<double>{0, 36.5 + 18, 0, 0, 0};
     dhParams.push_back(dhParam);
     dhParam = vector<double>{0, 0, 0, -pi / 2, 0};
     dhParams.push_back(dhParam);
@@ -101,10 +101,18 @@ void Robot::renderizar()
 
     modelo3D *model;
 
+    Vector3d pos(0, 0, 0);
+    Vector3d nx(1, 0, 0);
+    Vector3d ny(0, 1, 0);
+    Vector3d nz(0, 0, 1);
+
+
+    OpenGLWrapper::Drawarrow3D(pos, pos + 4 * nx, new double[3]{1, 0.1, 0.2}, 0.3);
+    OpenGLWrapper::Drawarrow3D(pos, pos + 4 * ny, new double[3]{.1, 1, 0.2}, 0.3);
+    OpenGLWrapper::Drawarrow3D(pos, pos + 4 * nz, new double[3]{0.1, 0.2, 1}, 0.3);
+
     for (auto &dhParam : dhParams) {
         Matrix4d DH = getDHMatrix(dhParam);
-        //info_msg("test");
-        // info_msg(DH);
         TH = TH * DH;
 
         Vector3d nx(TH(0, 0), TH(1, 0), TH(2, 0));
@@ -119,48 +127,41 @@ void Robot::renderizar()
         OpenGLWrapper::Drawarrow3D(pos, pos + 4 * ny, new double[3]{.1, 1, 0.2}, 0.3);
         OpenGLWrapper::Drawarrow3D(pos, pos + 4 * nz, new double[3]{0.1, 0.2, 1}, 0.3);
 
-//      model = modelos[m];
-//        //  }
-//        glColor4f(fabs(cos(m * PI / modelos.size())), fabs(sin(20 * (m - 5) * PI / modelos.size())), 0.2, 0.5);
-//
-//        glEnable(GL_BLEND);
-//        glBegin(GL_TRIANGLES);
-//
-//        glFrontFace(GL_FRONT_AND_BACK);
-//        for (int i = 0; i < model->ntriangles; i++) {
-//
-//            Vector3d v1 = model->triangulos[i].vertices[0];   //posiciones locales
-//            Vector3d v2 = model->triangulos[i].vertices[1];
-//            Vector3d v3 = model->triangulos[i].vertices[2];
-//            Vector4d v14(v1(0), v1(1), v1(2), 1), v24(v2(0), v2(1), v2(2), 1), v34(v2(0), v2(1), v2(2), 1);
-//
-//            v14 = TH * v14;
-//            v24 = TH * v24;
-//            v34 = TH * v34;
-//            v1 = {v14(0, 0), v14(1, 0), v14(2, 0)};
-//            v2 = {v24(0, 0), v24(1, 0), v24(2, 0)};
-//            v3 = {v34(0, 0), v34(1, 0), v34(2, 0)};
-//
-//
-//            Vector4d N, d14, d24;
-//            d14 = v24 - v14;
-//            d24 = v34 - v14;
-//            Vector3d d1, d2, n;
-//            d1 = {d14(0, 0), d14(1, 0), d14(2, 0)};
-//            d2 = {d24(0, 0), d24(1, 0), d24(2, 0)};
-//            n = d1.cross(d2);  ///devuelve el producto vectorial
-//            n.normalize();
-//
-//
-//            glNormal3f(n(0), n(1), n(2));
-//            glVertex3f(v1(0), v1(1), v1(2));
-//            glVertex3f(v2(0), v2(1), v2(2));
-//            glVertex3f(v3(0), v3(1), v3(2));
-//        }
-//        glEnd();
-//// }
-//        glDisable(GL_BLEND);
-//
+        model = modelos[1];
+        glColor3d(0, 0, 0);
+        //  }
+        //glColor4f(fabs(cos(m * PI / modelos.size())), fabs(sin(20 * (m - 5) * PI / modelos.size())), 0.2, 0.5);
+
+        glEnable(GL_BLEND);
+        glBegin(GL_TRIANGLES);
+
+        glFrontFace(GL_FRONT_AND_BACK);
+        for (int i = 0; i < model->ntriangles; i++) {
+
+            Vector3d v1 = model->triangulos[i].vertices[0];   //posiciones locales
+            Vector3d v2 = model->triangulos[i].vertices[1];
+            Vector3d v3 = model->triangulos[i].vertices[2];
+            Vector4d v14(v1(0), v1(1), v1(2), 1),
+                v24(v2(0), v2(1), v2(2), 1),
+                v34(v3(0), v3(1), v3(2), 1);
+
+            v14 = TH * v14;
+            v24 = TH * v24;
+            v34 = TH * v34;
+
+
+            v1 = {v14(0), v14(1), v14(2)};
+            v2 = {v24(0), v24(1), v24(2)};
+            v3 = {v34(0), v34(1), v34(2)};
+
+            OpenGLWrapper::vectorVertex(v1);
+            OpenGLWrapper::vectorVertex(v2);
+            OpenGLWrapper::vectorVertex(v3);
+        }
+        glEnd();
+// }
+        glDisable(GL_BLEND);
+
 
 ///DIBUJAR EJES
 
