@@ -19,32 +19,13 @@ class Model3D
 public:
     int ntriangles;
     triangles *triangulos;
-    Matrix3d Rx, Ry, Rz;  //local
+
     Model3D();
 
     void leer(string nombre);
     virtual ~Model3D();
     Model3D(int ntriangulos);
-    void dibujar();
-    void rotarX();  //local x axis rotation
-    void rotarY();  //local y axis rotation
-    void rotarZ();  //local z axis rotation
-    void definirRz(float theta);
-    void definirRy(float theta);
-    void definirRx(float theta);
 
-    Matrix3d LARx, LARy, LARz;
-
-    void trasladar(Vector3d A);
     fstream archivo;
-
-    Vector3d ux, uy, uz, O; //local axis nad Origin
-
-    void BodyFramerotarX();
-    void BodyFramerotarY();
-    void BodyFramerotarZ();
-    Matrix3d BFRx, BFRy, BFRz, R;
-    Vector3d LocalMassCenter() const;
-    Vector3d GlobalCenterMass() const;
 
 };

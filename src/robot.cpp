@@ -79,8 +79,8 @@ void Robot::configurarTH(std::string dh_file_path)
 
     const Json::Value &characters = obj["links"]; // array of characters
     for (int i = 0; i < characters.size(); i++) {
-        double d = characters[i]["d"].asDouble();
-        double a = characters[i]["a"].asDouble();
+        double d = characters[i]["d"].asDouble()/10;
+        double a = characters[i]["a"].asDouble()/10;
         double alpha = characters[i]["alpha"].asDouble();
         double theta = characters[i]["theta"].asDouble();
         vector<double> dhParam{theta, d, a, alpha, 0};
