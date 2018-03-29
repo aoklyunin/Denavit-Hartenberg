@@ -4,6 +4,7 @@ Robot::Robot()
 {
     TH = Matrix<double, 4, 4>::Identity();
     jointCnt = 0;
+    position = Vector3d(0, 0, 0);
 }
 
 Robot::~Robot()
@@ -49,6 +50,11 @@ void Robot::inicializar()
 
 }
 
+Vector3d Robot::getPosition()
+{
+    return position;
+}
+
 void Robot::rotateLink(int j, double alpha)
 {
     if (j < jointCnt) {
@@ -56,10 +62,16 @@ void Robot::rotateLink(int j, double alpha)
     }
 }
 
+double gradToRad(double grad)
+{
+    return grad / 180 * 3.14;
+}
 void Robot::configurarTH(std::string dh_file_path)
 {
     Json::Reader reader;
     Json::Value obj;
+
+    double jointInitValues[6]{74.57, -135.69, -23.8, -46.52, -39.39, 39.72};
 
     //info_msg(dh_file_path);
 
@@ -79,7 +91,14 @@ void Robot::configurarTH(std::string dh_file_path)
         double a = characters[i]["a"].asDouble() / 10;
         double alpha = characters[i]["alpha"].asDouble();
         double theta = characters[i]["theta"].asDouble();
-        vector<double> dhParam{theta, d, a, alpha, 0};
+        double theta_0;
+        if (i > 6) {
+            theta_0 = 0;
+        }
+        else {
+            theta_0 = jointInitValues[i];
+        }
+        vector<double> dhParam{theta, d, a, alpha, gradToRad(theta_0)};
         dhParams.push_back(dhParam);
         jointCnt++;
     }
@@ -166,5 +185,6 @@ void Robot::renderizar()
         glDisable(GL_BLEND);
 
     }
+    position = Vector3d(TH(0, 3), TH(1, 3), TH(2, 3));
 
 }

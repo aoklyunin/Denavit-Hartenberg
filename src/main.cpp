@@ -198,7 +198,10 @@ static void Draw(void)
     glTranslated(30, 30, 0);
     robot.renderizar();
     glPopMatrix();
-
+    Vector3d pos = robot.getPosition();
+    char title[256];
+    sprintf(title, "x=%.3f y=%.3f z=%.3f", pos(0)*10, pos(1)*10, pos(2)*10);
+    glutSetWindowTitle(title);
 
     if (doubleBuffer) {
         glutSwapBuffers();

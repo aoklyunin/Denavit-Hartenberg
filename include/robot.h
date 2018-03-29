@@ -23,7 +23,7 @@ public:
     void renderizar();
     void configurarTH(std::string dh_file_path);
     void rotateLink(int j, double alpha);
-
+    Vector3d getPosition();
 
 private :
     Matrix4d TH;
@@ -39,5 +39,6 @@ private :
     Model3D *b5;
     Model3D *b6;
 
+    Vector3d position;
     int jointCnt;
 };
