@@ -67,18 +67,18 @@ void Robot::configurarTH()
     double pi = 3.14;
     // theta, a, d, alpha
     // надо сделать согнутым
-    vector<double> dhParam{0, 40, 2.5, -pi / 2, 0};
+    vector<double> dhParam{0, 10, 2, -pi / 2, 0};
     dhParams.push_back(dhParam);
-    dhParam = vector<double>{-pi/2, 0, 31.5, 0, 0};
+    dhParam = vector<double>{-pi / 2, 0, 10, 0, 0};
     dhParams.push_back(dhParam);
-    dhParam = vector<double>{pi / 2, 0, 30.5, 0, 0};
+    dhParam = vector<double>{0, 0, 10, -pi / 2, 0};
     dhParams.push_back(dhParam);
-    dhParam = vector<double>{0, 36.5 + 18, 0, 0, 0};
+    dhParam = vector<double>{0, 10, 0,pi / 2 , 0};
     dhParams.push_back(dhParam);
     dhParam = vector<double>{0, 0, 0, -pi / 2, 0};
     dhParams.push_back(dhParam);
-    dhParam = vector<double>{0, 14.8, 0, 0, 0};
-    dhParams.push_back(dhParam);
+//    dhParam = vector<double>{0, 14.8, 0, 0, 0};
+//    dhParams.push_back(dhParam);
 }
 
 Matrix4d getDHMatrix(vector<double> dh)
@@ -162,7 +162,6 @@ void Robot::renderizar()
         glEnd();
 
         glDisable(GL_BLEND);
-
 
     }
 
