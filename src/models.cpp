@@ -1,12 +1,12 @@
 
 
-#include "../include/modelo3D.h"
+#include "../include/models.h"
 
 
 //Copyright (C) <2017>  <Eliseo Rivera Silva> curso.tareas@gmail.com
 
 
-modelo3D::modelo3D()
+Model3D::Model3D()
 {
     ntriangles = 0;
 
@@ -28,17 +28,17 @@ modelo3D::modelo3D()
     ///***************
 }
 
-modelo3D::~modelo3D()
+Model3D::~Model3D()
 {
     delete triangulos;
 
 }
-modelo3D::modelo3D(int ntriangulos)
+Model3D::Model3D(int ntriangulos)
 {
     triangulos = new triangles[ntriangulos];
     ntriangles = ntriangulos;
 }
-void modelo3D::leer(std::string nombre)
+void Model3D::leer(std::string nombre)
 {
 
     char head[80] = "";
@@ -97,7 +97,7 @@ void modelo3D::leer(std::string nombre)
         std::cout << "el archivo no se encuentra" << std::endl;
     }
 }
-void modelo3D::definirRx(float dtheta)
+void Model3D::definirRx(float dtheta)
 {
 
     Rx << 1, 0, 0,
@@ -105,7 +105,7 @@ void modelo3D::definirRx(float dtheta)
         0, sin(dtheta), cos(dtheta);
 
 }
-void modelo3D::definirRy(float dtheta)
+void Model3D::definirRy(float dtheta)
 {
 
 
@@ -114,7 +114,7 @@ void modelo3D::definirRy(float dtheta)
         -sin(dtheta), 0, cos(dtheta);
 
 }
-void modelo3D::definirRz(float dtheta)
+void Model3D::definirRz(float dtheta)
 {
 
     Rz << cos(dtheta), -sin(dtheta), 0,
@@ -123,7 +123,7 @@ void modelo3D::definirRz(float dtheta)
 
 }
 
-void modelo3D::dibujar()
+void Model3D::dibujar()
 {
     glBegin(GL_TRIANGLES);
     glFrontFace(GL_FRONT_AND_BACK);
@@ -159,7 +159,7 @@ void modelo3D::dibujar()
     glEnd();
 };
 
-void modelo3D::rotarZ()
+void Model3D::rotarZ()
 {  //global rotation of only model
     for (int i = 0; i < ntriangles; i++) {
         Vector3d v1, v2, v3;
@@ -176,7 +176,7 @@ void modelo3D::rotarZ()
     }
     R = Rz * R;
 }
-void modelo3D::rotarY()
+void Model3D::rotarY()
 { //global rotation  of only model
     for (int i = 0; i < ntriangles; i++) {
         Vector3d v1, v2, v3;
@@ -193,7 +193,7 @@ void modelo3D::rotarY()
     }
     R = Ry * R;
 }
-void modelo3D::rotarX()
+void Model3D::rotarX()
 {//global rotation  of only model
     for (int i = 0; i < ntriangles; i++) {
         Vector3d v1, v2, v3;
@@ -211,7 +211,7 @@ void modelo3D::rotarX()
     R = Rx * R;
 }
 
-void modelo3D::trasladar(Vector3d A)
+void Model3D::trasladar(Vector3d A)
 {  //local traslation
     for (int i = 0; i < ntriangles; i++) {
         Vector3d v1, v2, v3;
@@ -226,7 +226,7 @@ void modelo3D::trasladar(Vector3d A)
     }
 
 }
-void modelo3D::BodyFramerotarX()
+void Model3D::BodyFramerotarX()
 {
     R = BFRx * R;
     ux = BFRx * ux;
@@ -234,14 +234,14 @@ void modelo3D::BodyFramerotarX()
     uz = BFRx * uz;
 
 };
-void modelo3D::BodyFramerotarY()
+void Model3D::BodyFramerotarY()
 {
     R = BFRy * R;
     ux = BFRy * ux;
     uy = BFRy * uy;
     uz = BFRy * uz;
 };
-void modelo3D::BodyFramerotarZ()
+void Model3D::BodyFramerotarZ()
 {
     R = BFRz * R;
     ux = BFRz * ux;
@@ -254,7 +254,7 @@ void modelo3D::IRx(){
 
 }*/
 
-Vector3d modelo3D::LocalMassCenter() const
+Vector3d Model3D::LocalMassCenter() const
 {
     Vector3d center;
     for (int i = 0; i < ntriangles; i++) {
@@ -271,7 +271,7 @@ Vector3d modelo3D::LocalMassCenter() const
     return center;
 
 }
-Vector3d modelo3D::GlobalCenterMass() const
+Vector3d Model3D::GlobalCenterMass() const
 {
     Vector3d L = LocalMassCenter();
 

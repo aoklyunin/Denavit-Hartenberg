@@ -1,11 +1,48 @@
+
 {
-    "book":"Alice in Wonderland",
-    "year":1865,
-    "characters":
-    [
-        {"name":"Jabberwock", "chapter":1},
-        {"name":"Cheshire Cat", "chapter":6},
-        {"name":"Mad Hatter", "chapter":7}
+    "name": "Kuka KR-10",
+    "links": [
+        {
+            "name":"joint-1",
+            "theta": 0,
+            "d": 10,
+            "a": 2,
+            "alpha": 1.57
+        },
+        {
+            "name":"joint-2",
+            "theta": 0,
+            "d": 0,
+            "a": 10,
+            "alpha": 0
+        },
+        {
+            "name":"joint-3",
+            "theta": -1.57,
+            "d": 0,
+            "a": 0,
+            "alpha": -1.57
+        },
+        {
+            "name":"joint-4",
+            "theta": 0,
+            "d": 10,
+            "a": 0,
+            "alpha": 1.57
+        },
+        {
+            "name":"joint-5",
+            "theta": 0,
+            "d": 0,
+            "a": 0,
+            "alpha": -1.57
+        },
+        {
+            "name":"joint-6",
+            "theta": 0,
+            "d": 3,
+            "a": 0,
+            "alpha": 0
+        }
     ]
 }
-

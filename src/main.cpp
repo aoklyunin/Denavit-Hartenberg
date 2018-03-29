@@ -233,8 +233,8 @@ int main(int argc, char **argv)
     printf("WARNING: client-side OpenGL has no ABGR extension support!\n");
     printf("         Drawing only RGBA (and not ABGR) images and textures.\n");
 #endif
-    if (argc > 0) {
-        dh_file_path = argv[0];
+    if (argc > 1) {
+        dh_file_path = argv[1];
     }
     else {
         dh_file_path = "../dh_params/kr10.json";

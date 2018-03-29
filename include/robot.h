@@ -5,7 +5,7 @@
 #include <Eigen/Dense>
 #include <cmath>
 
-#include "modelo3D.h"
+#include "models.h"
 #include "openGL_wrapper.h"
 
 #include <json/json.h>
@@ -20,14 +20,14 @@ public:
     Robot();
     ~Robot();
 
-    modelo3D *base;
-    modelo3D *b1;
-    modelo3D *b2;
-    modelo3D *b3;
-    modelo3D *b4;
-    modelo3D *b5;
-    modelo3D *b6;
-    modelo3D *gripe;
+    Model3D *base;
+    Model3D *b1;
+    Model3D *b2;
+    Model3D *b3;
+    Model3D *b4;
+    Model3D *b5;
+    Model3D *b6;
+    Model3D *gripe;
 
     void inicializar();
     void renderizar();
@@ -37,7 +37,7 @@ public:
 
     std::vector<Matrix4d> THList;
     std::vector<Vector4d> Origenes;
-    std::vector<modelo3D *> modelos;
+    std::vector<Model3D *> modelos;
 
     std::vector<std::vector<double>> dhParams;
 

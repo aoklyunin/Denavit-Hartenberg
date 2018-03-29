@@ -29,14 +29,14 @@ Robot::~Robot()
 
 void Robot::inicializar()
 {
-    base = new modelo3D();
+    base = new Model3D();
 
-    b1 = new modelo3D();
-    b2 = new modelo3D();
-    b3 = new modelo3D();
-    b4 = new modelo3D();
-    b5 = new modelo3D();
-    b6 = new modelo3D();
+    b1 = new Model3D();
+    b2 = new Model3D();
+    b3 = new Model3D();
+    b4 = new Model3D();
+    b5 = new Model3D();
+    b6 = new Model3D();
 
     base->leer("models/base.STL");
     b1->leer("models/b1.STL");
@@ -63,47 +63,46 @@ void Robot::rotateLink(int j, double alpha)
     info_msg(dhParams.at(j));
 }
 
-
 void Robot::configurarTH(std::string dh_file_path)
 {
     Json::Reader reader;
     Json::Value obj;
 
-    std::ifstream ifs(dh_file_path);
-    std::string content( (std::istreambuf_iterator<char>(ifs) ),
-                         (std::istreambuf_iterator<char>()    ) );
+    info_msg(dh_file_path);
 
-
-    info_msg(content);
+    std::ifstream ifs(dh_file_path.c_str(), std::ios_base::binary);
+    std::string content((std::istreambuf_iterator<char>(ifs)),
+                        (std::istreambuf_iterator<char>()));
 
     reader.parse(content, obj); // reader can also read strings
+    info_msg("Robot name: ", obj["name"].asString());
 
-    cout << "Book: " << obj["book"].asString() << endl;
-    cout << "Year: " << obj["year"].asUInt() << endl;
-
-    const Json::Value &characters = obj["characters"]; // array of characters
+    const Json::Value &characters = obj["links"]; // array of characters
     for (int i = 0; i < characters.size(); i++) {
-        cout << "    name: " << characters[i]["name"].asString();
-        cout << " chapter: " << characters[i]["chapter"].asUInt();
-        cout << endl;
+        double d = characters[i]["d"].asDouble();
+        double a = characters[i]["a"].asDouble();
+        double alpha = characters[i]["alpha"].asDouble();
+        double theta = characters[i]["theta"].asDouble();
+        vector<double> dhParam{theta, d, a, alpha, 0};
+        dhParams.push_back(dhParam);
     }
 
-
-    double pi = 3.14;
-    // theta, a, d, alpha
-    // надо сделать согнутым
-    vector<double> dhParam{0, 10, 2, -pi / 2, 0};
-    dhParams.push_back(dhParam);
-    dhParam = vector<double>{-pi / 2, 0, 10, 0, 0};
-    dhParams.push_back(dhParam);
-    dhParam = vector<double>{0, 0, 10, -pi / 2, 0};
-    dhParams.push_back(dhParam);
-    dhParam = vector<double>{0, 10, 0, pi / 2, 0};
-    dhParams.push_back(dhParam);
-    dhParam = vector<double>{0, 0, 0, -pi / 2, 0};
-    dhParams.push_back(dhParam);
-    dhParam = vector<double>{0, 14.8, 0, 0, 0};
-    dhParams.push_back(dhParam);
+//
+//    double pi = 3.14;
+//    // theta, a, d, alpha
+//    // надо сделать согнутым
+//    vector<double> dhParam{0, 10, 2, -pi / 2, 0};
+//    dhParams.push_back(dhParam);
+//    dhParam = vector<double>{-pi / 2, 0, 10, 0, 0};
+//    dhParams.push_back(dhParam);
+//    dhParam = vector<double>{0, 0, 10, -pi / 2, 0};
+//    dhParams.push_back(dhParam);
+//    dhParam = vector<double>{0, 10, 0, pi / 2, 0};
+//    dhParams.push_back(dhParam);
+//    dhParam = vector<double>{0, 0, 0, -pi / 2, 0};
+//    dhParams.push_back(dhParam);
+//    dhParam = vector<double>{0, 14.8, 0, 0, 0};
+//    dhParams.push_back(dhParam);
 }
 
 Matrix4d getDHMatrix(vector<double> dh)
@@ -125,7 +124,7 @@ void Robot::renderizar()
 
     TH = Matrix<double, 4, 4>::Identity();
 
-    modelo3D *model;
+    Model3D *model;
 
     Vector3d pos(0, 0, 0);
     Vector3d nx(1, 0, 0);

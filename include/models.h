@@ -14,17 +14,17 @@
 using namespace std;
 using namespace Eigen;
 
-class modelo3D
+class Model3D
 {
 public:
     int ntriangles;
     triangles *triangulos;
     Matrix3d Rx, Ry, Rz;  //local
-    modelo3D();
+    Model3D();
 
     void leer(string nombre);
-    virtual ~modelo3D();
-    modelo3D(int ntriangulos);
+    virtual ~Model3D();
+    Model3D(int ntriangulos);
     void dibujar();
     void rotarX();  //local x axis rotation
     void rotarY();  //local y axis rotation
