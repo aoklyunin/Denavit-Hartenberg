@@ -9,7 +9,9 @@
 
 Camera camera;
 
-robot SSRMS;
+Robot SSRMS;
+
+std::string dh_file_path;
 
 double prevX = 10000;
 
@@ -43,7 +45,7 @@ void motionFunc(int x, int y)
 
 GLenum doubleBuffer;
 
-static void Init(void)
+static void Init(std::string dh_file_path)
 {
     /* initialize random seed: */
     srand(time(NULL));
@@ -56,6 +58,7 @@ static void Init(void)
     glEnable(GL_DEPTH_TEST);                    // hidden surface removal
     glShadeModel(GL_SMOOTH);                    // use smooth shading
     //glEnable(GL_LIGHTING);
+
 
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHT1);
@@ -75,7 +78,7 @@ static void Init(void)
                     Vector3d(0, 0, 1));
 
     SSRMS.inicializar(); ///cargar modelos
-    SSRMS.configurarTH(); ///Posiciones de las piezas
+    SSRMS.configurarTH(dh_file_path); ///Posiciones de las piezas
 
 
 }
@@ -206,22 +209,7 @@ void Reshape(int width, int height)
     gluPerspective(52.0f, (GLdouble) width / (GLdouble) height, 1.0f, 1000.0f);
     glMatrixMode(GL_MODELVIEW);                // set modelview matrix
     glLoadIdentity();                        // reset modelview matrix
-}
 
-static void Args(int argc, char **argv)
-{
-    GLint i;
-
-    doubleBuffer = GL_TRUE;
-
-    for (i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-sb") == 0) {
-            doubleBuffer = GL_FALSE;
-        }
-        else if (strcmp(argv[i], "-db") == 0) {
-            doubleBuffer = GL_TRUE;
-        }
-    }
 }
 
 int main(int argc, char **argv)
@@ -229,7 +217,7 @@ int main(int argc, char **argv)
     GLenum type;
 
     glutInit(&argc, argv);
-    Args(argc, argv);
+
 
     type = GLUT_RGB;
     type |= (doubleBuffer) ? GLUT_DOUBLE : GLUT_SINGLE;
@@ -245,7 +233,15 @@ int main(int argc, char **argv)
     printf("WARNING: client-side OpenGL has no ABGR extension support!\n");
     printf("         Drawing only RGBA (and not ABGR) images and textures.\n");
 #endif
-    Init();
+    if (argc > 0) {
+        dh_file_path = argv[0];
+    }
+    else {
+        dh_file_path = "../dh_params/kr10.json";
+    }
+
+
+    Init(dh_file_path);
     glutKeyboardFunc(Key);
     glutDisplayFunc(Draw);
     glutReshapeFunc(Reshape);
