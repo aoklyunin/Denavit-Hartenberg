@@ -13,12 +13,23 @@
 
 using namespace Eigen;
 
-///Copyright (C) <2017>  <Eliseo Rivera> curso.tareas@gmail.com
+
 class Robot
 {
 public:
     Robot();
     ~Robot();
+    void inicializar();
+    void renderizar();
+    void configurarTH(std::string dh_file_path);
+    void rotateLink(int j, double alpha);
+
+
+private :
+    Matrix4d TH;
+    std::vector<Model3D *> models;
+
+    std::vector<std::vector<double>> dhParams;
 
     Model3D *base;
     Model3D *b1;
@@ -27,20 +38,6 @@ public:
     Model3D *b4;
     Model3D *b5;
     Model3D *b6;
-    Model3D *gripe;
 
-    void inicializar();
-    void renderizar();
-    void configurarTH(std::string dh_file_path);
-    void rotateLink(int j, double alpha);
-    Matrix4d THx, THy, THz, TH;
-
-    std::vector<Matrix4d> THList;
-    std::vector<Vector4d> Origenes;
-    std::vector<Model3D *> modelos;
-
-    std::vector<std::vector<double>> dhParams;
-
-private :
-
+    int jointCnt;
 };

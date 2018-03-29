@@ -9,13 +9,17 @@
 
 Camera camera;
 
-Robot SSRMS;
+Robot robot;
+
+int clientWidth = 1600;
+
+int clientHeight = 1080;
 
 std::string dh_file_path;
 
-double prevX = 10000;
+int prevPosX = 10000;
 
-double prevY = 10000;
+int prevPosY = 10000;
 
 void glutTimer(int value)
 {
@@ -25,20 +29,28 @@ void glutTimer(int value)
 
 void motionFunc(int x, int y)
 {
-    if (prevX == 10000) {
-        prevX = x;
+    if (prevPosX == 10000) {
+        prevPosX = x;
     }
-    if (prevY == 10000) {
-        prevY = y;
+    if (prevPosY == 10000) {
+        prevPosY = y;
     }
-    double dX = x - prevX;
-    double dY = y - prevY;
-    prevX = x;
-    prevY = y;
+
+    double dX = x - prevPosX;
+    double dY = y - prevPosY;
+
+    prevPosX = x;
+    prevPosY = y;
 
     camera.rotateX(-dX / 50);
-
     camera.rotateY(-dY / 50);
+
+
+    //glutWarpPointer(clientWidth / 2, clientHeight / 2);
+
+    info_msg(dX, " ", dY, " ");
+
+
     glutPostRedisplay();
 
 }
@@ -47,7 +59,6 @@ GLenum doubleBuffer;
 
 static void Init(std::string dh_file_path)
 {
-    /* initialize random seed: */
     srand(time(NULL));
 
     glClearColor(1, 1, 1, 1);
@@ -77,24 +88,20 @@ static void Init(std::string dh_file_path)
                     Vector3d(0.5, 0.5, 0).normalized(),
                     Vector3d(0, 0, 1));
 
-    SSRMS.inicializar(); ///cargar modelos
-    SSRMS.configurarTH(dh_file_path); ///Posiciones de las piezas
-
+    robot.inicializar();
+    robot.configurarTH(dh_file_path);
 
 }
-
-/* ARGSUSED1 */
 static void Key(unsigned char key, int x, int y)
 {
-
-    std::cout << (int) key << std::endl;
 
     double deltaPos = 1;
     double deltaAlpha = 0.1;
 
-    switch (key) {
-        case 27:
+    //info_msg((int)key);
 
+    switch (key) {
+        case 27:exit(0);
             break;
 
         case 97 :camera.moveLeft(deltaPos);
@@ -109,52 +116,52 @@ static void Key(unsigned char key, int x, int y)
 
             break;
 
-        case 49:SSRMS.rotateLink(0, deltaAlpha);
+        case 49:robot.rotateLink(0, deltaAlpha);
 
             break;
 
-        case 50:SSRMS.rotateLink(0, -deltaAlpha);
+        case 50:robot.rotateLink(0, -deltaAlpha);
 
             break;
 
 
-        case 51:SSRMS.rotateLink(1, deltaAlpha);
+        case 51:robot.rotateLink(1, deltaAlpha);
 
             break;
 
-        case 52:SSRMS.rotateLink(1, -deltaAlpha);
+        case 52:robot.rotateLink(1, -deltaAlpha);
 
             break;
 
-        case 53:SSRMS.rotateLink(2, deltaAlpha);
+        case 53:robot.rotateLink(2, deltaAlpha);
 
             break;
 
-        case 54:SSRMS.rotateLink(2, -deltaAlpha);
+        case 54:robot.rotateLink(2, -deltaAlpha);
 
             break;
 
-        case 55:SSRMS.rotateLink(3, deltaAlpha);
+        case 55:robot.rotateLink(3, deltaAlpha);
 
             break;
 
-        case 56:SSRMS.rotateLink(3, -deltaAlpha);
+        case 56:robot.rotateLink(3, -deltaAlpha);
 
             break;
 
-        case 57:SSRMS.rotateLink(4, deltaAlpha);
+        case 57:robot.rotateLink(4, deltaAlpha);
 
             break;
 
-        case 48:SSRMS.rotateLink(4, -deltaAlpha);
+        case 48:robot.rotateLink(4, -deltaAlpha);
 
             break;
 
-        case 45:SSRMS.rotateLink(5, deltaAlpha);
+        case 45:robot.rotateLink(5, deltaAlpha);
 
             break;
 
-        case 61:SSRMS.rotateLink(5, -deltaAlpha);
+        case 61:robot.rotateLink(5, -deltaAlpha);
 
             break;
 
@@ -164,6 +171,7 @@ static void Key(unsigned char key, int x, int y)
 
 static void Draw(void)
 {
+
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
@@ -187,7 +195,7 @@ static void Draw(void)
 
     glPushMatrix();
     glTranslated(30, 30, 0);
-    SSRMS.renderizar();
+    robot.renderizar();
     glPopMatrix();
 
 
@@ -223,7 +231,7 @@ int main(int argc, char **argv)
     type |= (doubleBuffer) ? GLUT_DOUBLE : GLUT_SINGLE;
     glutInitDisplayMode(type);
     glutInitWindowPosition(100, 100);
-    glutInitWindowSize(1600, 800);
+    glutInitWindowSize(clientWidth, clientHeight);
     glutCreateWindow("ABGR extension");
     if (!glutExtensionSupported("GL_EXT_abgr")) {
         printf("Couldn't find abgr extension.\n");

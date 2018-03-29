@@ -1,16 +1,9 @@
-
 #include "../include/robot.h"
-
-
-///Copyright (C) <2017>  <Eliseo Rivera> curso.tareas@gmail.com
 
 Robot::Robot()
 {
-    THx = Matrix<double, 4, 4>::Identity();
-    THy = Matrix<double, 4, 4>::Identity();
-    THz = Matrix<double, 4, 4>::Identity();
     TH = Matrix<double, 4, 4>::Identity();
-
+    jointCnt = 0;
 }
 
 Robot::~Robot()
@@ -24,7 +17,6 @@ Robot::~Robot()
     delete b5;
     delete b6;
 
-    //dtor
 }
 
 void Robot::inicializar()
@@ -47,20 +39,21 @@ void Robot::inicializar()
     b6->leer("models/b1.STL");
 
 
-    modelos.push_back(base);
-    modelos.push_back(b1);
-    modelos.push_back(b2);
-    modelos.push_back(b3);
-    modelos.push_back(b4);
-    modelos.push_back(b5);
-    modelos.push_back(b6);
+    models.push_back(base);
+    models.push_back(b1);
+    models.push_back(b2);
+    models.push_back(b3);
+    models.push_back(b4);
+    models.push_back(b5);
+    models.push_back(b6);
 
 }
 
 void Robot::rotateLink(int j, double alpha)
 {
-    dhParams.at(j).at(4) += alpha;
-    info_msg(dhParams.at(j));
+    if (j < jointCnt) {
+        dhParams.at(j).at(4) += alpha;
+    }
 }
 
 void Robot::configurarTH(std::string dh_file_path)
@@ -68,7 +61,7 @@ void Robot::configurarTH(std::string dh_file_path)
     Json::Reader reader;
     Json::Value obj;
 
-    info_msg(dh_file_path);
+    //info_msg(dh_file_path);
 
     std::ifstream ifs(dh_file_path.c_str(), std::ios_base::binary);
     std::string content((std::istreambuf_iterator<char>(ifs)),
@@ -78,31 +71,18 @@ void Robot::configurarTH(std::string dh_file_path)
     info_msg("Robot name: ", obj["name"].asString());
 
     const Json::Value &characters = obj["links"]; // array of characters
+
+    jointCnt = 0;
+
     for (int i = 0; i < characters.size(); i++) {
-        double d = characters[i]["d"].asDouble()/10;
-        double a = characters[i]["a"].asDouble()/10;
+        double d = characters[i]["d"].asDouble() / 10;
+        double a = characters[i]["a"].asDouble() / 10;
         double alpha = characters[i]["alpha"].asDouble();
         double theta = characters[i]["theta"].asDouble();
         vector<double> dhParam{theta, d, a, alpha, 0};
         dhParams.push_back(dhParam);
+        jointCnt++;
     }
-
-//
-//    double pi = 3.14;
-//    // theta, a, d, alpha
-//    // надо сделать согнутым
-//    vector<double> dhParam{0, 10, 2, -pi / 2, 0};
-//    dhParams.push_back(dhParam);
-//    dhParam = vector<double>{-pi / 2, 0, 10, 0, 0};
-//    dhParams.push_back(dhParam);
-//    dhParam = vector<double>{0, 0, 10, -pi / 2, 0};
-//    dhParams.push_back(dhParam);
-//    dhParam = vector<double>{0, 10, 0, pi / 2, 0};
-//    dhParams.push_back(dhParam);
-//    dhParam = vector<double>{0, 0, 0, -pi / 2, 0};
-//    dhParams.push_back(dhParam);
-//    dhParam = vector<double>{0, 14.8, 0, 0, 0};
-//    dhParams.push_back(dhParam);
 }
 
 Matrix4d getDHMatrix(vector<double> dh)
@@ -152,10 +132,8 @@ void Robot::renderizar()
         OpenGL_wrapper::drawArrow3D(pos, pos + 4 * ny, new double[3]{.1, 1, 0.2}, 0.3);
         OpenGL_wrapper::drawArrow3D(pos, pos + 4 * nz, new double[3]{0.1, 0.2, 1}, 0.3);
 
-        model = modelos[1];
-        glColor3d(0, 0, 0);
-        //  }
-        //glColor4f(fabs(cos(m * PI / modelos.size())), fabs(sin(20 * (m - 5) * PI / modelos.size())), 0.2, 0.5);
+        model = models[1];
+        glColor3d(0.5, 0.5, 0.5);
 
         glEnable(GL_BLEND);
         glBegin(GL_TRIANGLES);
@@ -163,9 +141,9 @@ void Robot::renderizar()
         glFrontFace(GL_FRONT_AND_BACK);
         for (int i = 0; i < model->ntriangles; i++) {
 
-            Vector3d v1 = model->triangulos[i].vertices[0];   //posiciones locales
-            Vector3d v2 = model->triangulos[i].vertices[1];
-            Vector3d v3 = model->triangulos[i].vertices[2];
+            Vector3d v1 = model->triangleList[i].vertices[0];   //posiciones locales
+            Vector3d v2 = model->triangleList[i].vertices[1];
+            Vector3d v3 = model->triangleList[i].vertices[2];
             Vector4d v14(v1(0), v1(1), v1(2), 1),
                 v24(v2(0), v2(1), v2(2), 1),
                 v34(v3(0), v3(1), v3(2), 1);

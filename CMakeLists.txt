@@ -31,7 +31,7 @@ SET(JSONCPP_LIBRARIES jsoncpp)
 #FIND_PACKAGE(GL REQUIRED)
 
 
-add_executable(dh_vis src/main.cpp src/models.cpp src/robot.cpp src/triangles.cpp include/models.h include/triangles.h include/robot.h src/camera.cpp include/camera.h include/traces.h src/traces.cpp include/formatting.h include/userTime.h src/openGL_wrapper.cpp include/openGL_wrapper.h )
+add_executable(dh_vis src/main.cpp src/models.cpp src/robot.cpp include/models.h include/triangle.h include/robot.h src/camera.cpp include/camera.h include/traces.h src/traces.cpp include/formatting.h include/user_time.h src/openGL_wrapper.cpp include/openGL_wrapper.h )
 
 TARGET_LINK_LIBRARIES(dh_vis ${CMAKE_THREAD_LIBS_INIT} ${JSONCPP_LIBRARIES})
 

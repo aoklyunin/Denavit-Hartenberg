@@ -1,15 +1,15 @@
 #pragma once
 
-#include"triangles.h"
 #include<fstream>
 #include <iostream>
-
 #include <GL/gl.h>
 #include<GL/glu.h>
-#define PI 3.14159265
 #include <string>
 #include <Eigen/Dense>
-//Copyright (C) <2017>  <Eliseo Rivera Silva> curso.tareas@gmail.com
+
+#include "traces.h"
+#include"triangle.h"
+
 
 using namespace std;
 using namespace Eigen;
@@ -18,14 +18,15 @@ class Model3D
 {
 public:
     int ntriangles;
-    triangles *triangulos;
+    Triangle *triangleList;
 
     Model3D();
 
     void leer(string nombre);
     virtual ~Model3D();
+
     Model3D(int ntriangulos);
 
-    fstream archivo;
+    fstream modelFStream;
 
 };

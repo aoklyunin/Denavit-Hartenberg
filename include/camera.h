@@ -1,9 +1,7 @@
-//
-// Created by alex on 28.03.18.
-//
 #pragma once
 
 #include <Eigen/Dense>
+
 #include "openGL_wrapper.h"
 #include "traces.h"
 

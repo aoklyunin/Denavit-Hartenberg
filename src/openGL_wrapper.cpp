@@ -1,7 +1,3 @@
-//
-// Created by alex on 28.03.18.
-//
-
 #include "../include/openGL_wrapper.h"
 
 // получаем матрицу поворота

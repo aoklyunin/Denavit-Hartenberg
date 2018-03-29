@@ -1,6 +1,3 @@
-//
-// Created by alex on 28.03.18.
-//
 #pragma once
 
 #include <GL/gl.h>
