@@ -1,17 +1,17 @@
-#include "../include/Triangle3D.h"
+#include "../include/triangles.h"
 
 //Copyright (C) <2017>  <Eliseo Rivera Silva> curso.tareas@gmail.com
 
-Triangle3D::Triangle3D()
+triangles::triangles()
 {
     //ctor
 }
 
-Triangle3D::~Triangle3D()
+triangles::~triangles()
 {
     //dtor
 }
-Vector3d Triangle3D::normal()
+Vector3d triangles::normal()
 {
     Vector3d d1, d2, n;
     d1 = vertices[1] - vertices[0];

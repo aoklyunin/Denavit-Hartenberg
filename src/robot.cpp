@@ -1,9 +1,9 @@
 
-#include "../include/Robot.h"
+#include "../include/robot.h"
 
 
 ///Copyright (C) <2017>  <Eliseo Rivera> curso.tareas@gmail.com
-Robot::Robot()
+robot::robot()
 {
     THx = Matrix<double, 4, 4>::Identity();
     THy = Matrix<double, 4, 4>::Identity();
@@ -12,7 +12,7 @@ Robot::Robot()
 
 }
 
-Robot::~Robot()
+robot::~robot()
 {
 
     delete base;
@@ -26,7 +26,7 @@ Robot::~Robot()
     //dtor
 }
 
-void Robot::inicializar()
+void robot::inicializar()
 {
     base = new modelo3D();
     b1 = new modelo3D();
@@ -56,13 +56,13 @@ void Robot::inicializar()
 
 }
 
-void Robot::rotateLink(int j, double alpha)
+void robot::rotateLink(int j, double alpha)
 {
     dhParams.at(j).at(4) += alpha;
     info_msg(dhParams.at(j));
 }
 
-void Robot::configurarTH()
+void robot::configurarTH()
 {
     double pi = 3.14;
     // theta, a, d, alpha
@@ -95,7 +95,7 @@ Matrix4d getDHMatrix(vector<double> dh)
         0, 0, 0, 1;
     return m;
 }
-void Robot::renderizar()
+void robot::renderizar()
 {
 
     TH = Matrix<double, 4, 4>::Identity();
@@ -108,9 +108,9 @@ void Robot::renderizar()
     Vector3d nz(0, 0, 1);
 
 
-    OpenGLWrapper::Drawarrow3D(pos, pos + 4 * nx, new double[3]{1, 0.1, 0.2}, 0.3);
-    OpenGLWrapper::Drawarrow3D(pos, pos + 4 * ny, new double[3]{.1, 1, 0.2}, 0.3);
-    OpenGLWrapper::Drawarrow3D(pos, pos + 4 * nz, new double[3]{0.1, 0.2, 1}, 0.3);
+    OpenGL_wrapper::drawArrow3D(pos, pos + 4 * nx, new double[3]{1, 0.1, 0.2}, 0.3);
+    OpenGL_wrapper::drawArrow3D(pos, pos + 4 * ny, new double[3]{.1, 1, 0.2}, 0.3);
+    OpenGL_wrapper::drawArrow3D(pos, pos + 4 * nz, new double[3]{0.1, 0.2, 1}, 0.3);
 
     for (auto &dhParam : dhParams) {
         Matrix4d DH = getDHMatrix(dhParam);
@@ -124,9 +124,9 @@ void Robot::renderizar()
 
         // info_msg(pos);
 
-        OpenGLWrapper::Drawarrow3D(pos, pos + 4 * nx, new double[3]{1, 0.1, 0.2}, 0.3);
-        OpenGLWrapper::Drawarrow3D(pos, pos + 4 * ny, new double[3]{.1, 1, 0.2}, 0.3);
-        OpenGLWrapper::Drawarrow3D(pos, pos + 4 * nz, new double[3]{0.1, 0.2, 1}, 0.3);
+        OpenGL_wrapper::drawArrow3D(pos, pos + 4 * nx, new double[3]{1, 0.1, 0.2}, 0.3);
+        OpenGL_wrapper::drawArrow3D(pos, pos + 4 * ny, new double[3]{.1, 1, 0.2}, 0.3);
+        OpenGL_wrapper::drawArrow3D(pos, pos + 4 * nz, new double[3]{0.1, 0.2, 1}, 0.3);
 
         model = modelos[1];
         glColor3d(0, 0, 0);
@@ -155,9 +155,9 @@ void Robot::renderizar()
             v2 = {v24(0), v24(1), v24(2)};
             v3 = {v34(0), v34(1), v34(2)};
 
-            OpenGLWrapper::vectorVertex(v1);
-            OpenGLWrapper::vectorVertex(v2);
-            OpenGLWrapper::vectorVertex(v3);
+            OpenGL_wrapper::vectorVertex(v1);
+            OpenGL_wrapper::vectorVertex(v2);
+            OpenGL_wrapper::vectorVertex(v3);
         }
         glEnd();
 

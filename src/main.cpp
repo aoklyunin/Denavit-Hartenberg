@@ -3,13 +3,13 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "../include/OpenGLWrapper.h"
-#include "../include/Robot.h"
+#include "../include/openGL_wrapper.h"
+#include "../include/robot.h"
 
 
 Camera camera;
 
-Robot SSRMS;
+robot SSRMS;
 
 double prevX = 10000;
 
@@ -83,7 +83,7 @@ static void Init(void)
 /* ARGSUSED1 */
 static void Key(unsigned char key, int x, int y)
 {
-    float dtheta(3);
+
     std::cout << (int) key << std::endl;
 
     double deltaPos = 1;
@@ -143,7 +143,15 @@ static void Key(unsigned char key, int x, int y)
 
             break;
 
-        case 58:SSRMS.rotateLink(4, -deltaAlpha);
+        case 48:SSRMS.rotateLink(4, -deltaAlpha);
+
+            break;
+
+        case 45:SSRMS.rotateLink(5, deltaAlpha);
+
+            break;
+
+        case 61:SSRMS.rotateLink(5, -deltaAlpha);
 
             break;
 
@@ -170,15 +178,14 @@ static void Draw(void)
               up(0), up(1), up(2));
 
 
-    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {100, 0, 0}, new double[3]{1, 0.0, 0.0}, 1);
-    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 100, 0}, new double[3]{0.0, 1, 0.0}, 1);
-    OpenGLWrapper::Drawarrow3D({0, 0, 0}, {0, 0, 100}, new double[3]{0.0, 0.0, 1}, 1);
+    OpenGL_wrapper::drawArrow3D({0, 0, 0}, {100, 0, 0}, new double[3]{1, 0.0, 0.0}, 1);
+    OpenGL_wrapper::drawArrow3D({0, 0, 0}, {0, 100, 0}, new double[3]{0.0, 1, 0.0}, 1);
+    OpenGL_wrapper::drawArrow3D({0, 0, 0}, {0, 0, 100}, new double[3]{0.0, 0.0, 1}, 1);
 
     glPushMatrix();
-        glTranslated(30,30,0);
-        SSRMS.renderizar();
+    glTranslated(30, 30, 0);
+    SSRMS.renderizar();
     glPopMatrix();
-
 
 
     if (doubleBuffer) {

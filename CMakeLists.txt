@@ -23,6 +23,6 @@ INCLUDE_DIRECTORIES(${EIGEN3_INCLUDE_DIRS})
 #FIND_PACKAGE(GL REQUIRED)
 
 
-add_executable(dh_vis src/main.cpp src/modelo3D.cpp src/Robot.cpp src/Triangle3D.cpp  include/modelo3D.h include/Triangle3D.h include/Robot.h src/Camera.cpp include/Camera.h include/traces.h src/traces.cpp include/formatting.h include/userTime.h include/userMath.h src/OpenGLWrapper.cpp include/OpenGLWrapper.h)
+add_executable(dh_vis src/main.cpp src/modelo3D.cpp src/robot.cpp src/triangles.cpp include/modelo3D.h include/triangles.h include/robot.h src/camera.cpp include/camera.h include/traces.h src/traces.cpp include/formatting.h include/userTime.h src/openGL_wrapper.cpp include/openGL_wrapper.h)
 
 target_link_libraries(dh_vis ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})

@@ -1,6 +1,6 @@
 #pragma once
 
-#include"Triangle3D.h"
+#include"triangles.h"
 #include<fstream>
 #include <iostream>
 
@@ -18,7 +18,7 @@ class modelo3D
 {
 public:
     int ntriangles;
-    Triangle3D *triangulos;
+    triangles *triangulos;
     Matrix3d Rx, Ry, Rz;  //local
     modelo3D();
 

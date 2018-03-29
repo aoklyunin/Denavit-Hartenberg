@@ -4,7 +4,7 @@
 #pragma once
 
 #include <Eigen/Dense>
-#include "OpenGLWrapper.h"
+#include "openGL_wrapper.h"
 #include "traces.h"
 
 using namespace Eigen;

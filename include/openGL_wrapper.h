@@ -8,16 +8,16 @@
 #include <Eigen/Dense>
 #include <iostream>
 
-#include "Camera.h"
+#include "camera.h"
 
 using namespace Eigen;
 
-class OpenGLWrapper
+class OpenGL_wrapper
 {
     static void getOrtho3(Vector3d A, Vector3d B, Vector3d *n);
     static void getCircleChoords(Vector3d n1, Vector3d n2, Vector3d *choords);
 public:
-    static void Drawarrow3D(Vector3d A, Vector3d B, double *color, double R);
+    static void drawArrow3D(Vector3d A, Vector3d B, double *color, double R);
     static Matrix3d getRMatrix(double alpha, Vector3d v);
     static void vectorVertex(Vector3d v);
 };

@@ -2,10 +2,10 @@
 // Created by alex on 28.03.18.
 //
 
-#include "../include/OpenGLWrapper.h"
+#include "../include/openGL_wrapper.h"
 
 // получаем матрицу поворота
-Matrix3d OpenGLWrapper::getRMatrix(double alpha, Vector3d v)
+Matrix3d OpenGL_wrapper::getRMatrix(double alpha, Vector3d v)
 {
     double x = v(0);
     double y = v(1);
@@ -28,7 +28,7 @@ Matrix3d OpenGLWrapper::getRMatrix(double alpha, Vector3d v)
 }
 
 // по двум точкам получаем три ортогональных базисных вектора, первый сонаправлен с AB
-void OpenGLWrapper::getOrtho3(Vector3d A, Vector3d B, Vector3d *n)
+void OpenGL_wrapper::getOrtho3(Vector3d A, Vector3d B, Vector3d *n)
 {
 
     if (A(0) == B(0) && A(1) == B(1) && A(2) == B(2))
@@ -62,13 +62,13 @@ void OpenGLWrapper::getOrtho3(Vector3d A, Vector3d B, Vector3d *n)
 
 }
 
-void OpenGLWrapper::vectorVertex(Vector3d v)
+void OpenGL_wrapper::vectorVertex(Vector3d v)
 {
     glVertex3d(v(0), v(1), v(2));
 }
 
 // получить набор координат, образующий окружность в базисе переданны векторов
-void OpenGLWrapper::getCircleChoords(Vector3d n1, Vector3d n2, Vector3d *choords)
+void OpenGL_wrapper::getCircleChoords(Vector3d n1, Vector3d n2, Vector3d *choords)
 {
     choords[0] = n1;
     choords[1] = (n1 + n2) / sqrt(2);
@@ -82,7 +82,7 @@ void OpenGLWrapper::getCircleChoords(Vector3d n1, Vector3d n2, Vector3d *choords
 }
 
 // Нарисовать координатную ось
-void OpenGLWrapper::Drawarrow3D(Vector3d A, Vector3d B, double *color, double R)
+void OpenGL_wrapper::drawArrow3D(Vector3d A, Vector3d B, double *color, double R)
 {
     Vector3d n[3];
 

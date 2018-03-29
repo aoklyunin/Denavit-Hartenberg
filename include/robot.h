@@ -6,16 +6,16 @@
 #include <cmath>
 
 #include "modelo3D.h"
-#include "OpenGLWrapper.h"
+#include "openGL_wrapper.h"
 
 using namespace Eigen;
 
 ///Copyright (C) <2017>  <Eliseo Rivera> curso.tareas@gmail.com
-class Robot
+class robot
 {
     public:
-        Robot();
-        ~Robot();
+        robot();
+        ~robot();
 
         modelo3D *base;
            modelo3D *b1;

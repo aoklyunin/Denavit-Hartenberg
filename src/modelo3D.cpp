@@ -35,7 +35,7 @@ modelo3D::~modelo3D()
 }
 modelo3D::modelo3D(int ntriangulos)
 {
-    triangulos = new Triangle3D[ntriangulos];
+    triangulos = new triangles[ntriangulos];
     ntriangles = ntriangulos;
 }
 void modelo3D::leer(std::string nombre)
@@ -54,8 +54,8 @@ void modelo3D::leer(std::string nombre)
         int32_t size;
         archivo.read(reinterpret_cast<char *> (&size), sizeof(int32_t));
         ntriangles = size;
-        triangulos = new Triangle3D[size];
-        Triangle3D triangle;
+        triangulos = new triangles[size];
+        triangles triangle;
         Vector3d P0, P1, P2;
         Vector3d normal;
         float p0[3], p1[3], p2[3], n[3];

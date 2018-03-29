@@ -2,8 +2,7 @@
 // Created by alex on 28.03.18.
 //
 
-#include "../include/Camera.h"
-
+#include "../include/camera.h"
 
 
 Camera::Camera()
@@ -28,11 +27,11 @@ Vector3d Camera::getCenter()
 void Camera::rotateX(double alpha)
 {
 
-    Matrix3d R = OpenGLWrapper::getRMatrix(alpha, up);
+    Matrix3d R = OpenGL_wrapper::getRMatrix(alpha, up);
 
     dir = R * dir;
 
-    Matrix3d Rup = OpenGLWrapper::getRMatrix(alpha, Vector3d(0, 0, 1));
+    Matrix3d Rup = OpenGL_wrapper::getRMatrix(alpha, Vector3d(0, 0, 1));
     up = Rup * up;
 }
 
@@ -44,7 +43,7 @@ void Camera::rotateY(double alpha)
     if ((cDir < 0.7 && alpha < 0) || (cDir > -0.7 && alpha > 0)) {
 
         Vector3d r = up.cross(dir).normalized();
-        Matrix3d R = OpenGLWrapper::getRMatrix(alpha, r);
+        Matrix3d R = OpenGL_wrapper::getRMatrix(alpha, r);
 
         up = R * up;
         dir = R * dir;
