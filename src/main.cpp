@@ -90,6 +90,7 @@ static void Init(std::string dh_file_path)
 
     robot.inicializar();
     robot.configurarTH(dh_file_path);
+    glutWarpPointer(clientWidth / 2, clientHeight / 2);
 
 }
 static void Key(unsigned char key, int x, int y)
