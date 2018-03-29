@@ -1,0 +1,47 @@
+{
+  "name": "Kuka KR-10",
+  "links": [
+    {
+      "name": "joint-1",
+      "theta": 0,
+      "d": 400,
+      "a": 25,
+      "alpha": -1.57
+    },
+    {
+      "name": "joint-2",
+      "theta": 0,
+      "d": 0,
+      "a": 315,
+      "alpha": 0
+    },
+    {
+      "name": "joint-3",
+      "theta": -1.57,
+      "d": 0,
+      "a": 35,
+      "alpha": -1.57
+    },
+    {
+      "name": "joint-4",
+      "theta": 0,
+      "d": 420,
+      "a": 0,
+      "alpha": 1.57
+    },
+    {
+      "name": "joint-5",
+      "theta": 0,
+      "d": 0,
+      "a": 0,
+      "alpha": -1.57
+    },
+    {
+      "name": "joint-6",
+      "theta": 0,
+      "d": 80,
+      "a": 0,
+      "alpha": 0
+    }
+  ]
+}
