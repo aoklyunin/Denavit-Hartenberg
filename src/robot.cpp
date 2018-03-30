@@ -58,7 +58,7 @@ Vector3d Robot::getPosition()
 void Robot::rotateLink(int j, double alpha)
 {
     if (j < jointCnt) {
-        dhParams.at(j).at(4) += alpha;
+        dhParams.at(nonVirtualJoints.at(j)).at(4) += alpha;
     }
 }
 
@@ -71,7 +71,6 @@ void Robot::configurarTH(std::string dh_file_path)
     Json::Reader reader;
     Json::Value obj;
 
-    double jointInitValues[6]{74.57, -135.69, -23.8, -46.52, -39.39, 39.72};
 
     //info_msg(dh_file_path);
 
@@ -83,7 +82,7 @@ void Robot::configurarTH(std::string dh_file_path)
     info_msg("Robot name: ", obj["name"].asString());
 
     const Json::Value &characters = obj["links"]; // array of characters
-
+    const Json::Value &jointInitValues = obj["jointInitValues"];
     jointCnt = 0;
 
     for (int i = 0; i < characters.size(); i++) {
@@ -92,13 +91,21 @@ void Robot::configurarTH(std::string dh_file_path)
         double alpha = characters[i]["alpha"].asDouble();
         double theta = characters[i]["theta"].asDouble();
         double theta_0;
-        if (i > 6) {
-            theta_0 = 0;
+        bool isVirtual = characters[i]["virtual"].asBool();
+        if (!isVirtual) {
+            nonVirtualJoints.push_back(i);
+            if (nonVirtualJoints.size() > jointInitValues[i].size()) {
+                theta_0 = 0;
+            }
+            else {
+                theta_0 = jointInitValues[i].asDouble();
+            }
         }
         else {
-            theta_0 = jointInitValues[i];
+            theta_0 = 0;
         }
-        vector<double> dhParam{theta, d, a, alpha, gradToRad(theta_0)};
+
+        vector<double> dhParam{theta, d, a, alpha, gradToRad(theta_0), isVirtual ? 0 : 1};
         dhParams.push_back(dhParam);
         jointCnt++;
     }

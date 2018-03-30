@@ -48,7 +48,7 @@ void motionFunc(int x, int y)
 
     //glutWarpPointer(clientWidth / 2, clientHeight / 2);
 
-    info_msg(dX, " ", dY, " ");
+    //info_msg(dX, " ", dY, " ");
 
 
     glutPostRedisplay();

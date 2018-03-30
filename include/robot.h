@@ -40,5 +40,7 @@ private :
     Model3D *b6;
 
     Vector3d position;
+
+    std::vector<int> nonVirtualJoints;
     int jointCnt;
 };
